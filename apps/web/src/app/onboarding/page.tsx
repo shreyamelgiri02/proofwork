@@ -4,6 +4,7 @@ import { Logo } from "@/components/brand";
 import { AccountMenu } from "@/components/shell/account-menu";
 import { Alert } from "@/components/ui/primitives";
 import { OnboardingWizard } from "@/features/onboarding/onboarding-wizard";
+import { ExploreDemoButton } from "@/features/demo/explore-demo-button";
 import { isDatabaseReady, setupGaps } from "@/lib/env";
 import { contextFor, getSession } from "@/lib/session";
 
@@ -11,18 +12,24 @@ export const metadata = { title: "Workspace setup" };
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingPage() {
+  const session = await getSession();
+  if (session.kind === "demo") redirect("/app/tasks");
+
   if (!isDatabaseReady()) {
     return (
-      <div className="mx-auto max-w-xl px-5 py-16">
-        <Alert tone="warning" title="Requires setup">
-          {setupGaps().join(" · ")}. See LOCAL-SETUP.md.
-        </Alert>
+      <div className="mx-auto flex min-h-dvh max-w-xl flex-col items-center justify-center px-5 py-16 text-center">
+        <Logo href="/" />
+        <h1 className="mt-6 text-2xl font-bold tracking-tight">Proofwork Preview</h1>
+        <p className="mt-2 text-muted">A production database is not connected on this server. Explore the fully functional live demo with 6 pre-configured verification scenarios.</p>
+        <div className="mt-6">
+          <ExploreDemoButton size="lg" icon>
+            Explore live demo
+          </ExploreDemoButton>
+        </div>
       </div>
     );
   }
-  const session = await getSession();
   if (session.kind === "anonymous") redirect("/sign-in?next=/onboarding");
-  if (session.kind === "demo") redirect("/app/tasks");
   if (session.workspace.onboarding_completed_at) redirect("/app/tasks");
 
   const sql = getSql();

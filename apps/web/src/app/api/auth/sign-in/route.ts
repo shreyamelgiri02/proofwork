@@ -3,12 +3,23 @@ import { enforceRateLimit, ensurePrivateWorkspace, getSql } from "@proofwork/dat
 import { AppError, LIMITS, signInSchema } from "@proofwork/domain";
 import { clientIp, json, parseBody, route } from "@/lib/api";
 import { mapAuthError } from "@/lib/auth-errors";
-import { DEMO_COOKIE } from "@/lib/demo-cookie";
+import { DEMO_COOKIE, demoCookieOptions, encodeDemoCookie } from "@/lib/demo-cookie";
+import { isDatabaseReady, isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/redirect";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const POST = route(async (req, { correlationId }) => {
   const input = await parseBody(req, signInSchema, 4096);
+
+  if (!isDatabaseReady() || !isSupabaseConfigured()) {
+    const { createStandaloneDemoWorkspace } = await import("@/lib/standalone-demo");
+    const ttl = Number(process.env.DEMO_SESSION_TTL_SECONDS ?? 86400);
+    const expiresAt = new Date(Date.now() + ttl * 1000);
+    const { workspaceId, sessionToken } = createStandaloneDemoWorkspace("Preview Workspace", "Demo Operator");
+    (await cookies()).set(DEMO_COOKIE, encodeDemoCookie(workspaceId, sessionToken, expiresAt), demoCookieOptions(expiresAt));
+    return json({ redirect: safeNextPath(input.next) }, correlationId);
+  }
+
   const sql = getSql();
   await enforceRateLimit(sql, `auth:sign-in:${clientIp(req)}`, LIMITS.AUTH_RATE_PER_WINDOW, LIMITS.AUTH_RATE_WINDOW_SECONDS);
   const supabase = await createSupabaseServerClient();

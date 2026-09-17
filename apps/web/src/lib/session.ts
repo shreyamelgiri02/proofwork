@@ -38,9 +38,7 @@ export type Session =
  * A workspace id supplied by the client is never used for authorization.
  */
 export const getSession = cache(async (): Promise<Session> => {
-  if (!isDatabaseReady()) return { kind: "anonymous", demoExpired: false };
-
-  if (isSupabaseConfigured()) {
+  if (isDatabaseReady() && isSupabaseConfigured()) {
     try {
       const supabase = await createSupabaseServerClient();
       const { data } = await supabase.auth.getUser();
@@ -76,11 +74,19 @@ export const getSession = cache(async (): Promise<Session> => {
   if (raw) {
     const decoded = decodeDemoCookie(raw);
     if (!decoded) return { kind: "anonymous", demoExpired: true };
-    const workspace = await findDemoWorkspace(getSql(), decoded.workspaceId, sha256(decoded.sessionToken));
-    if (!workspace || !workspace.expires_at || new Date(workspace.expires_at).getTime() <= Date.now()) {
-      return { kind: "anonymous", demoExpired: true };
+    if (decoded.expiresAt.getTime() <= Date.now()) return { kind: "anonymous", demoExpired: true };
+
+    if (isDatabaseReady()) {
+      const workspace = await findDemoWorkspace(getSql(), decoded.workspaceId, sha256(decoded.sessionToken));
+      if (!workspace || !workspace.expires_at || new Date(workspace.expires_at).getTime() <= Date.now()) {
+        return { kind: "anonymous", demoExpired: true };
+      }
+      return { kind: "demo", workspace, expiresAt: new Date(workspace.expires_at) };
+    } else {
+      const { getStandaloneWorkspace } = await import("@/lib/standalone-demo");
+      const workspace = getStandaloneWorkspace(decoded.workspaceId);
+      return { kind: "demo", workspace: workspace as any, expiresAt: decoded.expiresAt };
     }
-    return { kind: "demo", workspace, expiresAt: new Date(workspace.expires_at) };
   }
   return { kind: "anonymous", demoExpired: false };
 });
@@ -98,11 +104,14 @@ export function contextFor(session: Exclude<Session, { kind: "anonymous" }>, cor
 
 /** For API routes: require an authenticated context, optionally a completed onboarding. */
 export async function requireContext(correlationId: string, opts: { allowIncompleteOnboarding?: boolean } = {}) {
-  if (!isDatabaseReady()) throw new AppError("SETUP_REQUIRED", "The application database is not configured.");
   const session = await getSession();
   if (session.kind === "anonymous") {
     if (session.demoExpired) throw new AppError("DEMO_EXPIRED", "This demo session expired. Start a new session to continue.");
+    if (!isDatabaseReady()) throw new AppError("AUTH_REQUIRED", "Start a demo session to continue.");
     throw new AppError("AUTH_REQUIRED", "Sign in to continue.");
+  }
+  if (!isDatabaseReady() && session.kind === "user") {
+    throw new AppError("SETUP_REQUIRED", "The application database is not configured.");
   }
   if (!opts.allowIncompleteOnboarding && session.kind === "user" && !session.workspace.onboarding_completed_at) {
     throw new AppError("ONBOARDING_INCOMPLETE", "Finish workspace setup first.");

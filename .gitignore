@@ -22,3 +22,6 @@ proofwork-source.zip
 
 # Project-local Postgres cluster (npm run db:local:*)
 .local/
+
+.vercel
+.env*

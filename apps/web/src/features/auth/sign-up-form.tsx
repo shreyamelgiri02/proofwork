@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail } from "lucide-react";
+import { ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { LIMITS, signUpSchema, type SignUpInput } from "@proofwork/domain";
 import { Button } from "@/components/ui/button";
 import { Field, FormError, Input, PasswordInput } from "@/components/ui/form";
+import { ExploreDemoButton } from "@/features/demo/explore-demo-button";
 import { ApiClientError, apiFetch } from "@/lib/api-client";
 import { AuthCard, OrDivider } from "./auth-card";
 import { GoogleButton } from "./google-button";
@@ -75,6 +76,11 @@ export function SignUpForm({ googleEnabled }: { googleEnabled: boolean }) {
         <Link href="/sign-in" className="font-medium text-primary-ink hover:underline">
           Sign in
         </Link>
+      </div>
+      <div className="mt-5">
+        <ExploreDemoButton variant="outline" size="lg" className="w-full bg-primary-soft/50">
+          <ExternalLink aria-hidden /> Explore the isolated demo
+        </ExploreDemoButton>
       </div>
       <p className="mt-4 text-center text-[13px] leading-relaxed text-subtle">
         By creating an account you become the owner of a private workspace. Proofwork only reads or changes connected systems within the policy you set.
