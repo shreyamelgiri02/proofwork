@@ -7,9 +7,7 @@ export const DEMO_COOKIE = "pw_demo";
 
 function secret(): string {
   const s = process.env.DEMO_COOKIE_SECRET;
-  if (!s || s.length < 32 || s.startsWith("replace-")) {
-    return "proofwork-cloud-demo-secret-salt-key-minimum-32-chars-long";
-  }
+  if (!s || s.length < 32 || s.startsWith("replace-")) throw new Error("DEMO_COOKIE_SECRET is not configured.");
   return s;
 }
 

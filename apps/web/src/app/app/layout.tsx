@@ -10,41 +10,7 @@ import { getSession } from "@/lib/session";
 export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
-
-  if (session.kind === "anonymous") {
-    if (session.demoExpired) {
-      return (
-        <main id="main" className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-5 text-center">
-          <LogoMark className="size-12" />
-          <h1 className="mt-6 text-[28px] font-bold tracking-tight">This demo session expired.</h1>
-          <p className="mt-2 text-muted">Start a new session to continue. Demo data is isolated and purged after its retention window.</p>
-          <div className="mt-6">
-            <ExploreDemoButton size="lg">Start a new demo</ExploreDemoButton>
-          </div>
-        </main>
-      );
-    }
-    if (!isDatabaseReady()) {
-      return (
-        <main id="main" className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-5">
-          <LogoMark className="size-10" />
-          <h1 className="mt-6 text-2xl font-semibold">Proofwork Preview</h1>
-          <Alert tone="info" className="mt-4" title="Live Interactive Demo Available">
-            <p className="mt-1">Proofwork is running in standalone preview mode on this deployment. Launch the interactive workspace demo with 6 pre-configured verification scenarios.</p>
-            <div className="mt-4">
-              <ExploreDemoButton size="lg" icon>
-                Explore live demo
-              </ExploreDemoButton>
-            </div>
-          </Alert>
-        </main>
-      );
-    }
-    redirect("/sign-in?next=/app/tasks");
-  }
-
-  if (session.kind === "user" && !isDatabaseReady()) {
+  if (!isDatabaseReady()) {
     return (
       <main id="main" className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-5">
         <LogoMark className="size-10" />
@@ -61,16 +27,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     );
   }
 
+  const session = await getSession();
+  if (session.kind === "anonymous") {
+    if (session.demoExpired) {
+      return (
+        <main id="main" className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-5 text-center">
+          <LogoMark className="size-12" />
+          <h1 className="mt-6 text-[28px] font-bold tracking-tight">This demo session expired.</h1>
+          <p className="mt-2 text-muted">Start a new session to continue. Demo data is isolated and purged after its retention window.</p>
+          <div className="mt-6">
+            <ExploreDemoButton size="lg">Start a new demo</ExploreDemoButton>
+          </div>
+        </main>
+      );
+    }
+    redirect("/sign-in?next=/app/tasks");
+  }
   if (session.kind === "user" && !session.workspace.onboarding_completed_at) redirect("/onboarding");
 
-  let summary: any;
-  if (!isDatabaseReady()) {
-    const { getStandaloneShellSummary } = await import("@/lib/standalone-demo");
-    summary = getStandaloneShellSummary(session.workspace.id);
-  } else {
-    summary = await getShellSummary(getSql(), session.workspace.id);
-  }
-
+  const summary = await getShellSummary(getSql(), session.workspace.id);
   const initial = JSON.parse(
     JSON.stringify({
       identity:
