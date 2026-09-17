@@ -1,0 +1,18 @@
+
+> proofwork@0.1.0 test:crash
+> tsx --test --test-concurrency=1 --test-timeout=400000 tests/crash-recovery.test.ts
+
+▶ Worker crash and lease recovery (real processes)
+  ✔ crash after_prepare: lease expires, a new worker reconciles the SAME operation, exactly one write reaches billing (18569.5302ms)
+  ✔ crash after_dispatch_reserved: lease expires, a new worker reconciles the SAME operation, exactly one write reaches billing (18389.152ms)
+  ✔ crash after_write: lease expires, a new worker reconciles the SAME operation, exactly one write reaches billing (18435.2677ms)
+  ✔ late commit from a worker that lost its lease is discarded (fencing) (1647.1843ms)
+✔ Worker crash and lease recovery (real processes) (57044.9354ms)
+ℹ tests 4
+ℹ suites 1
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98572.6407

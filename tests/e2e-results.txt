@@ -1,0 +1,71 @@
+
+> proofwork@0.1.0 test:e2e
+> tsx --test --test-concurrency=1 --test-timeout=240000 tests/e2e-api.test.ts
+
+▶ Proofwork end-to-end (running stack)
+  ▶ C. workspace isolation and access control
+    ✔ anonymous API access is rejected (5.955ms)
+    ✔ forged demo cookie grants nothing (17.499ms)
+    ✔ two demo sessions are isolated (task, approvals, activity) (2151.5214ms)
+    ✔ cross-origin state-changing request is rejected (CSRF) (11.0796ms)
+    ✔ demo cannot create tokens, change identity or use Stripe (37.2385ms)
+    ✔ ingestion API requires a valid token (3.4844ms)
+    ✔ invalid payloads return field errors, not stack traces (15.408ms)
+  ✔ C. workspace isolation and access control (2243.1868ms)
+  ▶ B. authentication endpoints
+    ✔ auth routes fail safely (SETUP_REQUIRED without Supabase, generic 401 with it) (183.5706ms)
+    ✔ protected pages redirect anonymous visitors to sign-in with a safe next (15.1422ms)
+  ✔ B. authentication endpoints (199.0582ms)
+  ▶ F. durable execution, idempotency and concurrency
+    ✔ same key + same payload returns the original receipt (34.016ms)
+    ✔ same key + changed payload is a conflict (30.3679ms)
+    ✔ 10 concurrent identical submissions create exactly one receipt (47.4002ms)
+    ✔ different keys for the same request attach to one logical task (39.1041ms)
+    ✔ claims are never returned as verified at acceptance (31.6983ms)
+    ✔ two concurrent approvals of one proposal record a single decision (4221.026ms)
+    ✔ competing recovery for the same subscription dispatches only once (10196.8601ms)
+    ✔ lost write response is reconciled without a second write (4137.3467ms)
+  ✔ F. durable execution, idempotency and concurrency (18755.7867ms)
+  ▶ E. recovery behavior
+    ✔ rejected source write ends FAILED_CONFIRMED and stays Needs action (4214.631ms)
+    ✔ rejection requires a reason, persists, and does not change the verdict (2137.5347ms)
+    ✔ expired proposal cannot be approved (1182.6495ms)
+    ✔ source drift after approval blocks the stale write (4262.3553ms)
+    ✔ wrong customer identity → Needs action, recovery blocked (2161.8444ms)
+    ✔ external correction before dispatch → no write, Cancellation scheduled (4327.5665ms)
+    ✔ reversal after a verified recovery → human review, no automatic re-write (26364.6605ms)
+    ✔ source outage stays Could not verify; recovers after restore + recheck (5282.7061ms)
+    ✔ write pause holds an approved recovery until writes resume (12230.8418ms)
+    ✔ observe-only never proposes; auto-recover repairs without approval (6365.7107ms)
+  ✔ E. recovery behavior (69023.3154ms)
+  ▶ H. reporting and exports
+    ✔ insights use the same cohort as tasks and keep hard cases in the denominator (20.0625ms)
+    ✔ approval-driven recoveries are excluded from the autonomous numerator (18.9061ms)
+    ✔ correctness is Not measured until a review label exists (85.7232ms)
+    ✔ CSV export contains exactly the filtered scope (27.4019ms)
+  ✔ H. reporting and exports (152.4178ms)
+  ▶ Ingestion API (private workspace provisioned directly, no Supabase login)
+    ✔ accepts a claim with 202, then verification decides (1080.2585ms)
+    ✔ rejects unknown fields (agent cannot define the outcome) (10.9952ms)
+    ✔ requires an Idempotency-Key (16.0439ms)
+    ✔ revoked token stops working (15.2807ms)
+  ✔ Ingestion API (private workspace provisioned directly, no Supabase login) (1535.4411ms)
+  ▶ A7. append-only and immutability guards (as proofwork_app)
+    ✔ audit_events rejects UPDATE and DELETE (30.6663ms)
+    ✔ decisions rejects UPDATE and DELETE (3.5774ms)
+    ✔ claim_receipts rejects UPDATE and DELETE (3.2314ms)
+    ✔ policy_versions rejects UPDATE and DELETE (2.331ms)
+    ✔ approval_decisions rejects UPDATE and DELETE (5.1178ms)
+    ✔ authorized request boundary is immutable (4.5619ms)
+    ✔ application role cannot read the billing sandbox schema (1.1615ms)
+    ✔ unresolved dispatched operations cannot be deleted (6.7452ms)
+  ✔ A7. append-only and immutability guards (as proofwork_app) (60.8971ms)
+✔ Proofwork end-to-end (running stack) (92503.403ms)
+ℹ tests 43
+ℹ suites 8
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111565.7988

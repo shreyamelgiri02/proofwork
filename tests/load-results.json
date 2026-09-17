@@ -1,0 +1,122 @@
+{
+  "started_at": "2026-09-16T23:17:49.950Z",
+  "http": [
+    {
+      "name": "GET / (homepage, SSR)",
+      "connections": 20,
+      "duration_s": 15,
+      "requests_total": 3342,
+      "requests_per_sec_avg": 223,
+      "latency_ms_p50": 87,
+      "latency_ms_p90": 113,
+      "latency_ms_p99": 129,
+      "latency_ms_max": 137,
+      "status_2xx": 3342,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "name": "GET /api/health",
+      "connections": 50,
+      "duration_s": 15,
+      "requests_total": 17104,
+      "requests_per_sec_avg": 1140,
+      "latency_ms_p50": 41,
+      "latency_ms_p90": 63,
+      "latency_ms_p99": 87,
+      "latency_ms_max": 349,
+      "status_2xx": 17104,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "name": "GET /api/tasks (demo session)",
+      "connections": 25,
+      "duration_s": 20,
+      "requests_total": 9293,
+      "requests_per_sec_avg": 465,
+      "latency_ms_p50": 53,
+      "latency_ms_p90": 60,
+      "latency_ms_p99": 72,
+      "latency_ms_max": 149,
+      "status_2xx": 9293,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "name": "GET /api/tasks/:id (evidence detail)",
+      "connections": 25,
+      "duration_s": 20,
+      "requests_total": 7108,
+      "requests_per_sec_avg": 355,
+      "latency_ms_p50": 69,
+      "latency_ms_p90": 86,
+      "latency_ms_p99": 103,
+      "latency_ms_max": 125,
+      "status_2xx": 7108,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "name": "GET /app/tasks (page render)",
+      "connections": 20,
+      "duration_s": 15,
+      "requests_total": 3433,
+      "requests_per_sec_avg": 229,
+      "latency_ms_p50": 84,
+      "latency_ms_p90": 112,
+      "latency_ms_p99": 134,
+      "latency_ms_max": 179,
+      "status_2xx": 3433,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "name": "GET /api/insights",
+      "connections": 20,
+      "duration_s": 15,
+      "requests_total": 6863,
+      "requests_per_sec_avg": 458,
+      "latency_ms_p50": 42,
+      "latency_ms_p90": 50,
+      "latency_ms_p99": 63,
+      "latency_ms_max": 138,
+      "status_2xx": 6863,
+      "non_2xx": 0,
+      "errors": 0,
+      "timeouts": 0
+    }
+  ],
+  "ingestion_burst": {
+    "requests": 150,
+    "duration_ms": 286,
+    "status_counts": {
+      "202": 60,
+      "429": 90
+    },
+    "receipts_stored": 60,
+    "tasks_created": 1,
+    "expectation": "≤60 accepted per minute per token, the rest 429; no 5xx; all accepted claims attach to ONE task"
+  },
+  "worker_throughput": {
+    "tasks": 200,
+    "fixture_creation_ms": 9428,
+    "all_verified": true,
+    "time_to_verify_all_ms": 1529,
+    "tasks_per_second": 130.8,
+    "verdicts": {
+      "MISMATCH": 100,
+      "OUT_OF_SCOPE": 50,
+      "SATISFIED_SCHEDULED": 50
+    },
+    "failed_or_dead_jobs": 0,
+    "proposals_awaiting_approval": 51,
+    "worker_config": "1 worker process, batch 20, concurrency 5, poll 2s"
+  },
+  "finished_at": "2026-09-16T23:19:50.396Z"
+}

@@ -1,0 +1,53 @@
+{
+  "name": "proofwork",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Proofwork independently verifies whether an AI employee completed an authorized business action, then recovers confirmed incomplete work within explicitly granted permissions.",
+  "author": "Shreya Melgiri",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace @proofwork/web",
+    "dev:web": "npm run dev --workspace @proofwork/web",
+    "dev:worker": "npm run dev --workspace @proofwork/worker",
+    "dev:sandbox": "npm run dev --workspace @proofwork/billing-sandbox",
+    "start:worker": "npm run start --workspace @proofwork/worker",
+    "start:sandbox": "npm run start --workspace @proofwork/billing-sandbox",
+    "build:web": "npm run build --workspace @proofwork/web",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed-local.ts",
+    "db:purge-demo": "tsx scripts/purge-demo.ts",
+    "secrets:generate": "tsx scripts/generate-secrets.ts",
+    "typecheck": "tsc -p apps/web/tsconfig.json --noEmit && tsc -p apps/worker/tsconfig.json --noEmit && tsc -p apps/billing-sandbox/tsconfig.json --noEmit",
+    "lint": "npm run lint --workspace @proofwork/web",
+    "db:local:init": "node scripts/local-db.mjs init",
+    "db:local:start": "node scripts/local-db.mjs start",
+    "db:local:stop": "node scripts/local-db.mjs stop",
+    "db:local:status": "node scripts/local-db.mjs status",
+    "start:web": "npm run start --workspace @proofwork/web",
+    "test": "tsx --test tests/evaluator.test.ts tests/units.test.ts",
+    "test:e2e": "tsx --test --test-concurrency=1 --test-timeout=240000 tests/e2e-api.test.ts",
+    "auth:setup": "node scripts/local-auth-setup.mjs",
+    "auth:start": "node scripts/local-auth-run.mjs",
+    "test:crash": "tsx --test --test-concurrency=1 --test-timeout=400000 tests/crash-recovery.test.ts",
+    "test:stripe": "tsx --test --test-concurrency=1 tests/stripe-adapter.test.ts",
+    "test:load": "tsx tests/load-test.ts"
+  },
+  "devDependencies": {
+    "@types/autocannon": "^7.12.7",
+    "@types/node": "^22.15.0",
+    "autocannon": "^8.0.0",
+    "axe-core": "^4.13.0",
+    "dotenv": "^16.5.0",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "postgres": "^3.4.7",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3"
+  }
+}

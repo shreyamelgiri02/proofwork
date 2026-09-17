@@ -1,0 +1,24 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment and secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Local services
+supabase/.branches/
+supabase/.temp/
+*.log
+.DS_Store
+
+# Source archives created by the handoff script
+proofwork-source.zip
+
+# Project-local Postgres cluster (npm run db:local:*)
+.local/

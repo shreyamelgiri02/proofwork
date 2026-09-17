@@ -1,0 +1,22 @@
+{
+  "run_at": "2026-09-17",
+  "tool": "axe-core 4.x injected via Playwright (Chromium)",
+  "rulesets": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"],
+  "viewports": ["desktop-light 1280", "tablet-light 768", "phone-light 390", "desktop-dark 1280", "phone-dark 390"],
+  "pages": ["/", "/sign-in", "/sign-up", "/forgot-password", "/reset-password", "/auth/callback (expired link)", "/app/tasks", "/app/tasks/:id x3", "/app/approvals", "/app/activity", "/app/insights", "/app/settings", "/app/requests/new", "/app/claims/new", "404"],
+  "page_checks": 85,
+  "violations": 0,
+  "keyboard": {
+    "first_tab_stop": "Skip to content",
+    "filter_tabs_roving_focus": "ArrowRight moves focus and selects the next tab (aria-selected updates)",
+    "dialog_focus_trap_and_escape": "pass (earlier browser journey)"
+  },
+  "fixed_before_this_run": [
+    "color-contrast: subtle text #7d8591 -> #646b77",
+    "color-contrast: white on #e0484f danger button -> danger-ink background",
+    "color-contrast: 404 numeral",
+    "region: demo banner now inside <aside aria-label='Demo session'>",
+    "scrollable-region-focusable: code/snapshot <pre>, and horizontally scrolling tables on phone (approvals, evidence, activity, tokens)"
+  ],
+  "not_covered": "No human NVDA/JAWS/Narrator listening session; automated rules cannot judge wording quality of announcements."
+}

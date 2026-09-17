@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Proofwork design tokens (see DESIGN.md).
+   Calm, light, evidence-first. Status color is always paired with text.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-canvas: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #fafbfc;
+  --color-ink: #17191d;
+  --color-muted: #5d6470;
+  --color-subtle: #646b77;
+  --color-line: #e4e7eb;
+  --color-line-strong: #d3d8de;
+
+  --color-primary: #3567e8;
+  --color-primary-hover: #2957d1;
+  --color-primary-pressed: #2249b3;
+  --color-primary-soft: #ebf1fe;
+  --color-primary-ink: #2552c7;
+
+  --color-success: #1f9960;
+  --color-success-soft: #e6f5ed;
+  --color-success-ink: #166044;
+
+  --color-danger: #e0484f;
+  --color-danger-soft: #fdecec;
+  --color-danger-ink: #b0262e;
+
+  --color-warning: #e3a008;
+  --color-warning-soft: #fff5dc;
+  --color-warning-ink: #8a5700;
+
+  --color-info: #3b82e6;
+  --color-info-soft: #e9f1fd;
+  --color-info-ink: #1d5bb3;
+
+  --color-neutral-soft: #eef0f3;
+  --color-neutral-ink: #4e5969;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --radius-control: 7px;
+  --radius-surface: 10px;
+
+  --shadow-card: 0 1px 2px rgb(23 25 29 / 0.04);
+  --shadow-float: 0 12px 32px rgb(23 25 29 / 0.12), 0 2px 6px rgb(23 25 29 / 0.06);
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-primary-soft);
+  }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .transition-ui {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-standard);
+  }
+}
+
+@keyframes pw-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pw-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pw-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pw-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.animate-pw-spin {
+  animation: pw-spin 0.9s linear infinite;
+}
+.animate-pw-fade-in {
+  animation: pw-fade-in 160ms var(--ease-standard) both;
+}
+.animate-pw-overlay {
+  animation: pw-overlay-in 140ms var(--ease-standard) both;
+}
+.animate-pw-pulse {
+  animation: pw-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

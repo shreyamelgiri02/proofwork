@@ -1,0 +1,42 @@
+
+> proofwork@0.1.0 test:stripe
+> tsx --test --test-concurrency=1 tests/stripe-adapter.test.ts
+
+▶ A. stripe-mock (official Stripe API mock)
+  ✔ account validation reads account identity (28.1919ms)
+  ✔ subscription read normalizes Stripe's real response shape (3.9349ms)
+  ✔ the recovery write is accepted by Stripe's API spec (only cancel_at_period_end=true) (17.7692ms)
+  ✔ stripe-mock rejects parameters outside the spec (sanity check that validation is real) (2.4144ms)
+  ✔ subscription list for selection works (2.195ms)
+✔ A. stripe-mock (official Stripe API mock) (55.6018ms)
+▶ B. exact request contract and error mapping (capture server)
+  ✔ write sends exactly one allowlisted parameter, pinned version, stable idempotency key (20.5816ms)
+  ✔ read uses GET with the pinned version and records the provider request id (16.9551ms)
+  ✔ livemode:true resources are rejected (47.3685ms)
+  ✔ read HTTP 404 → SOURCE_NOT_FOUND (never treated as cancelled) (17.8044ms)
+  ✔ read HTTP 401 → SOURCE_ACCESS_DENIED (never treated as cancelled) (15.7021ms)
+  ✔ read HTTP 403 → SOURCE_ACCESS_DENIED (never treated as cancelled) (16.9816ms)
+  ✔ read HTTP 429 → SOURCE_RATE_LIMITED (never treated as cancelled) (17.0752ms)
+  ✔ read HTTP 500 → SOURCE_UNAVAILABLE (never treated as cancelled) (16.5764ms)
+  ✔ read HTTP 503 → SOURCE_UNAVAILABLE (never treated as cancelled) (14.7099ms)
+  ✔ read timeout → SOURCE_TIMEOUT (153.3703ms)
+  ✔ write 5xx or timeout → UNCERTAIN (may have applied) (181.3876ms)
+  ✔ write 4xx → REJECTED with the Stripe error code (16.8045ms)
+  ✔ malformed or unsupported shapes are not guessed (17.1425ms)
+  ✔ unsafe subscription ids never reach the network (0.2342ms)
+  ✔ account bound to a different credential fails validation (30.6916ms)
+✔ B. exact request contract and error mapping (capture server) (596.0764ms)
+▶ C. configuration guards
+  ✔ live keys are rejected before any request (0.438ms)
+  ✔ demo workspaces can never resolve Stripe (0.1675ms)
+  ✔ credential is bound to exactly one workspace (0.1331ms)
+  ✔ API base override is loopback-only and ignored in production (0.0857ms)
+✔ C. configuration guards (0.9787ms)
+ℹ tests 24
+ℹ suites 3
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1273.3135
