@@ -52,12 +52,11 @@ describe("hosted runtime configuration", () => {
     ]);
   });
 
-  it("allows Google OAuth to stay disabled on a Vercel preview deployment", () => {
+  it("allows Google OAuth to stay disabled until its provider credentials are configured", () => {
     const errors = environment.validateProductionEnv({
       NODE_ENV: "production",
-      VERCEL_ENV: "preview",
-      NEXT_PUBLIC_APP_URL: "https://proofwork-preview.vercel.app",
-      PROOFWORK_ALLOWED_ORIGINS: "https://proofwork-preview.vercel.app",
+      NEXT_PUBLIC_APP_URL: "https://proofwork.example",
+      PROOFWORK_ALLOWED_ORIGINS: "https://proofwork.example",
       NEXT_PUBLIC_SUPABASE_URL: "https://project.supabase.co",
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_real",
       NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED: "false",

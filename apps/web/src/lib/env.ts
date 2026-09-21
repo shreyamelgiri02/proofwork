@@ -50,9 +50,8 @@ export function validateProductionEnv(env: NodeJS.ProcessEnv = process.env): str
   if (missingOrPlaceholder(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
     errors.push("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY is missing or still a placeholder.");
   }
-  const isProductionAlias = env.VERCEL_ENV !== "preview";
-  if (isProductionAlias && env.NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED !== "true") {
-    errors.push("NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED must be true in production.");
+  if (!["true", "false"].includes(env.NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED ?? "")) {
+    errors.push("NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED must be either true or false.");
   }
 
   const databaseUrl = parsedUrl(env.DATABASE_URL);
