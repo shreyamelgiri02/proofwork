@@ -28,7 +28,7 @@ export const GET = route(async (_req, { correlationId }) => {
     try {
       const response = await fetch(new URL("/health", process.env.SANDBOX_API_URL), {
         cache: "no-store",
-        signal: AbortSignal.timeout(2_500),
+        signal: AbortSignal.timeout(5_000),
       });
       sandbox = response.ok ? "ok" : "unavailable";
     } catch {
