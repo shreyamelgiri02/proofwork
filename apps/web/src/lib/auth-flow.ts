@@ -2,6 +2,15 @@ import { safeNextPath } from "./redirect";
 
 type SearchParams = Pick<URLSearchParams, "get">;
 
+/** Start OAuth only on the canonical app origin so its PKCE verifier cookie returns with the callback. */
+export function canonicalOAuthStart(requestOrigin: string, next: string | null, appUrl: string): URL | null {
+  const canonicalOrigin = new URL(appUrl).origin;
+  if (requestOrigin === canonicalOrigin) return null;
+  const target = new URL("/api/auth/oauth/google", canonicalOrigin);
+  target.searchParams.set("next", safeNextPath(next, "/app/tasks"));
+  return target;
+}
+
 export interface AuthCallbackError {
   kind: "error";
   title: string;
