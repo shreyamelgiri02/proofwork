@@ -55,10 +55,10 @@ export function OnboardingWizard({
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[260px_1fr] lg:gap-14">
+    <div className="grid gap-8 md:grid-cols-[240px_1fr] lg:gap-14">
       <aside aria-label="Setup progress">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">Workspace setup</p>
-        <p className="mt-3 text-[32px] font-bold leading-[1.1] tracking-[-0.03em]">Make the control explicit.</p>
+        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-primary">Workspace setup</p>
+        <p className="mt-3 text-[32px] font-semibold leading-[1.1] tracking-[-0.04em]">Make the control explicit.</p>
         <p className="mt-3 text-[16px] leading-relaxed text-muted">Set up your workspace to verify subscription cancellations at period end, with evidence you can inspect.</p>
         <ol className="mt-8 space-y-1">
           {STEPS.map((s) => {
@@ -71,11 +71,11 @@ export function OnboardingWizard({
                   disabled={s.n > maxReached}
                   onClick={() => setStep(s.n)}
                   aria-current={current ? "step" : undefined}
-                  className={cn("flex w-full items-start gap-3 rounded-surface px-3 py-3 text-left transition-ui disabled:cursor-default", current ? "bg-primary-soft" : "hover:bg-neutral-soft disabled:hover:bg-transparent")}
+                  className={cn("flex w-full items-start gap-3 rounded-control border-l-[3px] px-3 py-3 text-left transition-ui disabled:cursor-default", current ? "border-primary bg-primary-soft" : "border-transparent hover:bg-neutral-soft disabled:hover:bg-transparent")}
                 >
                   <span
                     className={cn(
-                      "flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold",
+                      "flex size-8 shrink-0 items-center justify-center rounded-[3px] border text-sm font-semibold",
                       done ? "bg-success-soft text-success" : current ? "bg-primary text-white" : "bg-neutral-soft text-neutral-ink",
                     )}
                   >
@@ -92,8 +92,8 @@ export function OnboardingWizard({
         </ol>
       </aside>
 
-      <section className="rounded-[12px] border border-line bg-surface p-6 shadow-card sm:p-10" aria-labelledby="onboarding-heading">
-        <p className="text-sm font-medium text-muted">Step {step} of 3</p>
+      <section className="rounded-surface border border-line border-t-[3px] border-t-evidence bg-surface p-6 shadow-card sm:p-10" aria-labelledby="onboarding-heading">
+        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted">Step {step} of 3</p>
         {step === 1 ? <WorkspaceStep headingRef={headingRef} profile={profile} onDone={() => goTo(2)} /> : null}
         {step === 2 ? <PolicyStep headingRef={headingRef} initialMode={policyMode} onBack={() => setStep(1)} onDone={() => goTo(3)} /> : null}
         {step === 3 ? <SourceStep headingRef={headingRef} sources={sources} onBack={() => setStep(2)} /> : null}
@@ -104,7 +104,7 @@ export function OnboardingWizard({
 
 function Heading({ headingRef, children }: { headingRef: React.RefObject<HTMLHeadingElement | null>; children: React.ReactNode }) {
   return (
-    <h1 id="onboarding-heading" ref={headingRef} tabIndex={-1} className="mt-2 text-[30px] font-bold tracking-[-0.03em] outline-none sm:text-[36px]">
+    <h1 id="onboarding-heading" ref={headingRef} tabIndex={-1} className="mt-2 text-[30px] font-semibold tracking-[-0.04em] outline-none sm:text-[36px]">
       {children}
     </h1>
   );
@@ -280,7 +280,7 @@ function SourceStep({ headingRef, sources, onBack }: { headingRef: React.RefObje
           disabled={!sources.localSandboxConfigured}
           onSelect={() => setAdapter("LOCAL_SANDBOX")}
           icon={<Database aria-hidden />}
-          title="Local billing sandbox"
+          title="Proofwork Sandbox"
           badge={sources.localSandboxConfigured ? <Badge tone="success">Ready to validate</Badge> : <Badge tone="warning">Requires setup</Badge>}
           description="An independent synthetic billing service with its own records, read and write credentials."
           points={["Isolated, non-production records", "Realistic subscription states", "Safe for the full workflow"]}
@@ -297,7 +297,7 @@ function SourceStep({ headingRef, sources, onBack }: { headingRef: React.RefObje
               ? "Reads and the single allowed update run against your Stripe test account. Live-mode keys and resources are rejected."
               : `Available after server-side configuration. ${sources.stripeReason ?? ""}`
           }
-          points={sources.stripeConfigured ? ["Test mode only", "Account identity validated before use", "No credentials entered in the browser"] : ["No credentials requested here", "Configured by the deployment owner", "See LOCAL-SETUP.md"]}
+          points={sources.stripeConfigured ? ["Test mode only", "Account identity validated before use", "No credentials entered in the browser"] : ["No credentials requested here", "Configured by the deployment owner", "Availability appears automatically"]}
           dashed={!sources.stripeConfigured}
         />
       </fieldset>

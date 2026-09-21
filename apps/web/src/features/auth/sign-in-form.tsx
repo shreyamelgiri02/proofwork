@@ -15,7 +15,7 @@ import { AuthCard, OrDivider } from "./auth-card";
 import { GoogleButton } from "./google-button";
 
 const QUERY_ERRORS: Record<string, string> = {
-  oauth_unavailable: "Google sign-in is not configured for this deployment.",
+  oauth_unavailable: "Google sign-in is temporarily unavailable here. Continue with email instead.",
   oauth_failed: "Google sign-in could not start. Try again or use your work email.",
   oauth_cancelled: "Google sign-in was cancelled.",
   session_expired: "Your session ended. Sign in again to continue.",

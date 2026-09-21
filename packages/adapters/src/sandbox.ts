@@ -99,7 +99,7 @@ export class SandboxBillingAdapter implements BillingAdapter {
       ok: true,
       source_account_id: b.id,
       livemode: false,
-      display_name: typeof b.label === "string" ? b.label : "Local billing sandbox",
+      display_name: typeof b.label === "string" ? b.label : "Proofwork Sandbox",
       provider_request_id: headers.get("x-request-id"),
       checked_at,
     };

@@ -13,7 +13,7 @@ export const POST = route(async (req, { correlationId }) => {
   }
   if (session.kind === "demo") return json({ redirect: "/app/tasks", resumed: true }, correlationId);
   if (!process.env.DEMO_COOKIE_SECRET || process.env.DEMO_COOKIE_SECRET.startsWith("replace-")) {
-    throw new AppError("SETUP_REQUIRED", "The demo is not configured on this server (DEMO_COOKIE_SECRET).");
+    throw new AppError("SETUP_REQUIRED", "The isolated demo is temporarily unavailable. Try again later.");
   }
   const sql = getSql();
   await enforceRateLimit(sql, `demo:create:${clientIp(req)}`, LIMITS.DEMO_COMMANDS_PER_MINUTE, 60);

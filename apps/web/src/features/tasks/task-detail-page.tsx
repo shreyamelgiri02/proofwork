@@ -167,7 +167,7 @@ function TaskDetailView({ d }: { d: TaskDetail }) {
         <ObservedCard d={d} />
       </section>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_360px]">
+      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,8fr)_minmax(340px,4fr)]">
         <div className="min-w-0 space-y-5">
           {/* 4–5: field comparison and reason */}
           <EvidenceCard decision={latest} taskId={task.id} tz={tz} sourceLabel={d.connection.display_name} />
@@ -284,7 +284,7 @@ function NextStepRail({ d }: { d: TaskDetail }) {
   const verdict = d.task.verdict;
 
   return (
-    <aside aria-labelledby="next-step-heading" className="space-y-4">
+    <aside aria-labelledby="next-step-heading" className="space-y-4 xl:sticky xl:top-24 xl:self-start">
       <Card className="p-5">
         <h2 id="next-step-heading" className="text-[20px] font-semibold tracking-tight">
           Next step

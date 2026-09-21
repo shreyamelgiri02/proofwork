@@ -14,7 +14,7 @@ import { createPolicyVersion, DEMO_ACTOR, getActiveConnection, setWritesPaused, 
 
 function admin(): SandboxAdminClient {
   const client = SandboxAdminClient.fromEnv();
-  if (!client) throw new AppError("SOURCE_NOT_CONFIGURED", "The local billing sandbox is not configured on this server.");
+  if (!client) throw new AppError("SOURCE_NOT_CONFIGURED", "Proofwork Sandbox is temporarily unavailable.");
   return client;
 }
 

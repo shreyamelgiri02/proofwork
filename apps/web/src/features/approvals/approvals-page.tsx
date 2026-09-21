@@ -88,7 +88,7 @@ export function ApprovalsPage() {
         </Alert>
       ) : null}
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_380px]">
+      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,8fr)_minmax(340px,4fr)]">
         <div className="min-w-0 space-y-4">
           {query.isPending ? (
             <Card className="space-y-4 p-6">
@@ -414,7 +414,7 @@ function DL({ label, children }: { label: string; children: React.ReactNode }) {
 
 function PolicyExplainer() {
   return (
-    <aside aria-labelledby="approval-policy-heading">
+    <aside aria-labelledby="approval-policy-heading" className="xl:sticky xl:top-24 xl:self-start">
       <Card className="p-6">
         <div className="flex items-start gap-3">
           <ShieldCheck className="size-7 shrink-0 text-primary" aria-hidden />

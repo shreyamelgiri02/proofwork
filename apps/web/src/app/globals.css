@@ -1,52 +1,52 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Proofwork design tokens (see DESIGN.md).
-   Calm, light, evidence-first. Status color is always paired with text.
+   Proofwork evidence-ledger system. Status color is always paired with text.
    --------------------------------------------------------------------------- */
 @theme {
-  --color-canvas: #f5f6f8;
+  --color-canvas: #f3f5f6;
   --color-surface: #ffffff;
-  --color-surface-muted: #fafbfc;
-  --color-ink: #17191d;
-  --color-muted: #5d6470;
-  --color-subtle: #646b77;
-  --color-line: #e4e7eb;
-  --color-line-strong: #d3d8de;
+  --color-surface-muted: #eaf0f2;
+  --color-ink: #101b24;
+  --color-evidence: #102a3a;
+  --color-muted: #52626d;
+  --color-subtle: #6b7982;
+  --color-line: #d6dee3;
+  --color-line-strong: #b9c6ce;
 
-  --color-primary: #3567e8;
-  --color-primary-hover: #2957d1;
-  --color-primary-pressed: #2249b3;
-  --color-primary-soft: #ebf1fe;
-  --color-primary-ink: #2552c7;
+  --color-primary: #2457d6;
+  --color-primary-hover: #1d49b8;
+  --color-primary-pressed: #173b95;
+  --color-primary-soft: #e8eefc;
+  --color-primary-ink: #1d49b8;
 
-  --color-success: #1f9960;
-  --color-success-soft: #e6f5ed;
-  --color-success-ink: #166044;
+  --color-success: #13795b;
+  --color-success-soft: #e5f2ed;
+  --color-success-ink: #0f654c;
 
-  --color-danger: #e0484f;
-  --color-danger-soft: #fdecec;
-  --color-danger-ink: #b0262e;
+  --color-danger: #c2414b;
+  --color-danger-soft: #f8e9ea;
+  --color-danger-ink: #9d303a;
 
-  --color-warning: #e3a008;
-  --color-warning-soft: #fff5dc;
-  --color-warning-ink: #8a5700;
+  --color-warning: #9a6700;
+  --color-warning-soft: #f6edda;
+  --color-warning-ink: #795100;
 
   --color-info: #3b82e6;
   --color-info-soft: #e9f1fd;
   --color-info-ink: #1d5bb3;
 
-  --color-neutral-soft: #eef0f3;
-  --color-neutral-ink: #4e5969;
+  --color-neutral-soft: #e9eef1;
+  --color-neutral-ink: #41515c;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
-  --radius-control: 7px;
+  --radius-control: 4px;
   --radius-surface: 10px;
 
-  --shadow-card: 0 1px 2px rgb(23 25 29 / 0.04);
-  --shadow-float: 0 12px 32px rgb(23 25 29 / 0.12), 0 2px 6px rgb(23 25 29 / 0.06);
+  --shadow-card: 0 1px 0 rgb(16 42 58 / 0.04), 0 5px 16px rgb(16 42 58 / 0.035);
+  --shadow-float: 0 18px 48px rgb(16 42 58 / 0.13), 0 2px 8px rgb(16 42 58 / 0.07);
 
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -65,6 +65,14 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
@@ -79,6 +87,16 @@
   button:disabled {
     cursor: not-allowed;
   }
+  table {
+    border-collapse: collapse;
+  }
+  th {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
 }
 
 @layer utilities {
@@ -89,6 +107,27 @@
     transition-property: color, background-color, border-color, box-shadow, opacity, transform;
     transition-duration: 150ms;
     transition-timing-function: var(--ease-standard);
+  }
+  .ledger-grid {
+    background-image: linear-gradient(to right, rgb(16 42 58 / 0.045) 1px, transparent 1px), linear-gradient(to bottom, rgb(16 42 58 / 0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .evidence-rule {
+    border-left: 3px solid var(--color-evidence);
+  }
+  .verdict-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    padding: 0.35rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
   }
 }
 
@@ -124,6 +163,14 @@
     opacity: 0.55;
   }
 }
+@keyframes pw-trace {
+  from {
+    stroke-dashoffset: 48;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 
 .animate-pw-spin {
   animation: pw-spin 0.9s linear infinite;
@@ -136,6 +183,9 @@
 }
 .animate-pw-pulse {
   animation: pw-pulse 1.6s ease-in-out infinite;
+}
+.animate-pw-trace {
+  animation: pw-trace 2.4s var(--ease-standard) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

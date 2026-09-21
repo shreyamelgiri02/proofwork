@@ -4,7 +4,7 @@ import { Logo } from "@/components/brand";
 import { AccountMenu } from "@/components/shell/account-menu";
 import { Alert } from "@/components/ui/primitives";
 import { OnboardingWizard } from "@/features/onboarding/onboarding-wizard";
-import { isDatabaseReady, setupGaps } from "@/lib/env";
+import { isDatabaseReady } from "@/lib/env";
 import { contextFor, getSession } from "@/lib/session";
 
 export const metadata = { title: "Workspace setup" };
@@ -14,8 +14,8 @@ export default async function OnboardingPage() {
   if (!isDatabaseReady()) {
     return (
       <div className="mx-auto max-w-xl px-5 py-16">
-        <Alert tone="warning" title="Requires setup">
-          {setupGaps().join(" · ")}. See LOCAL-SETUP.md.
+        <Alert tone="warning" title="Workspace setup is temporarily unavailable">
+          Proofwork cannot reach its evidence services right now. No workspace changes were made. Try again later or contact your deployment owner.
         </Alert>
       </div>
     );

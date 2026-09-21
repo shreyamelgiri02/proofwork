@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export function VerdictBadge({ verdict, size = "md", className }: { verdict: Verdict; size?: "sm" | "md"; className?: string }) {
   const v = VERDICT_LABELS[verdict] ?? VERDICT_LABELS.PENDING;
   return (
-    <Badge tone={v.tone} className={cn(size === "md" ? "px-2.5 py-1 text-sm" : "", className)} icon={<StatusIcon tone={v.tone} className={size === "md" ? "size-4" : "size-3.5"} />}>
+    <Badge tone={v.tone} className={cn("font-mono uppercase tracking-[0.04em]", size === "md" ? "px-2.5 py-1 text-[12px]" : "", className)} icon={<StatusIcon tone={v.tone} className={size === "md" ? "size-4" : "size-3.5"} />}>
       {v.label}
     </Badge>
   );

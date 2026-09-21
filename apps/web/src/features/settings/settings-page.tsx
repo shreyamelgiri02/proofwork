@@ -351,7 +351,7 @@ function SourcesSection({ d }: { d: SettingsResponse }) {
       <div className="mt-5 space-y-3">
         <SourceBox
           icon={<Database aria-hidden />}
-          title="Local billing sandbox"
+          title="Proofwork Sandbox"
           tone={local?.is_active ? "active" : "idle"}
           badges={
             <>

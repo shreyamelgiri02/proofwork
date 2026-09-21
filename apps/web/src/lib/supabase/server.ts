@@ -10,7 +10,7 @@ import { isSupabaseConfigured, publicEnv } from "@/lib/env";
  */
 export async function createSupabaseServerClient() {
   if (!isSupabaseConfigured()) {
-    throw new AppError("SETUP_REQUIRED", "Authentication is not configured. Start local Supabase and set the public Supabase URL and key.");
+    throw new AppError("SETUP_REQUIRED", "Account sign-in is temporarily unavailable. Try again later.");
   }
   const cookieStore = await cookies();
   return createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseKey, {

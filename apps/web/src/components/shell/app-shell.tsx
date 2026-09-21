@@ -41,72 +41,72 @@ const TITLES: [RegExp, string][] = [
   [/^\/app\/settings/, "Settings"],
 ];
 
-function NavLinks({ data, pathname, onNavigate }: { data: ShellData; pathname: string; onNavigate?: () => void }) {
+function isActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`) || (href === "/app/tasks" && (pathname.startsWith("/app/requests") || pathname.startsWith("/app/claims")));
+}
+
+function DesktopNav({ data, pathname }: { data: ShellData; pathname: string }) {
   return (
-    <ul className="space-y-1">
+    <nav aria-label="Workspace" className="hidden h-full items-stretch md:flex">
       {NAV.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`) || (item.href === "/app/tasks" && (pathname.startsWith("/app/requests") || pathname.startsWith("/app/claims")));
+        const active = isActive(pathname, item.href);
         const count = "count" in item && item.count ? item.count(data) : null;
         return (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              onClick={onNavigate}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "relative flex h-11 items-center gap-3 rounded-control px-3 text-[15px] transition-ui",
-                active ? "bg-primary-soft font-medium text-primary-ink" : "text-ink hover:bg-neutral-soft",
-              )}
-            >
-              {active ? <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] rounded-r bg-primary" aria-hidden /> : null}
-              <item.icon className={cn("size-5", active ? "text-primary" : "text-muted")} aria-hidden />
-              <span className="flex-1">{item.label}</span>
-              {count ? (
-                <span className={cn("rounded-md px-1.5 py-px text-xs font-medium tabular", active ? "bg-primary/10 text-primary-ink" : "bg-neutral-soft text-neutral-ink")}>
-                  {count}
-                  <span className="sr-only">{item.label === "Approvals" ? " waiting" : " total"}</span>
-                </span>
-              ) : null}
-            </Link>
-          </li>
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "relative flex min-w-20 items-center justify-center gap-2 px-3 text-[14px] font-medium transition-ui lg:min-w-24",
+              active ? "bg-primary-soft/65 text-primary-ink" : "text-muted hover:bg-neutral-soft hover:text-ink",
+            )}
+          >
+            <item.icon className="size-4" aria-hidden />
+            <span className="hidden lg:inline">{item.label}</span>
+            {count ? <span className={cn("rounded-[2px] px-1.5 py-px font-mono text-[10px]", active ? "bg-primary/10" : "bg-neutral-soft")}>{count}</span> : null}
+            {active ? <span className="absolute inset-x-2 bottom-0 h-[3px] bg-primary" aria-hidden /> : null}
+          </Link>
         );
       })}
-    </ul>
+    </nav>
   );
 }
 
-function SidebarBody({ data, pathname, onNavigate }: { data: ShellData; pathname: string; onNavigate?: () => void }) {
-  const settingsActive = pathname.startsWith("/app/settings");
+function MobileNavigation({ data, pathname, onNavigate }: { data: ShellData; pathname: string; onNavigate: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <div className="px-5 pb-6 pt-5">
-        <Logo href="/app/tasks" subtitle="Outcome control" />
-      </div>
-      <nav aria-label="Workspace" className="flex-1 overflow-y-auto px-3">
-        <NavLinks data={data} pathname={pathname} onNavigate={onNavigate} />
-        <div className="my-4 h-px bg-line" />
-        <Link
-          href="/app/settings"
-          onClick={onNavigate}
-          aria-current={settingsActive ? "page" : undefined}
-          className={cn("relative flex h-11 items-center gap-3 rounded-control px-3 text-[15px] transition-ui", settingsActive ? "bg-primary-soft font-medium text-primary-ink" : "text-ink hover:bg-neutral-soft")}
-        >
-          {settingsActive ? <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] rounded-r bg-primary" aria-hidden /> : null}
-          <Settings className={cn("size-5", settingsActive ? "text-primary" : "text-muted")} aria-hidden />
-          Settings
-        </Link>
-      </nav>
-      <div className="border-t border-line p-4">
-        <div className="flex items-center gap-3 rounded-control px-1 py-1">
-          <span className="flex size-9 items-center justify-center rounded-control bg-neutral-soft text-neutral-ink">
-            {data.workspace.kind === "DEMO" ? <FlaskConical className="size-4" aria-hidden /> : <Building2 className="size-4" aria-hidden />}
-          </span>
-          <span className="min-w-0 leading-tight">
-            <span className="block truncate text-sm font-medium text-ink">{data.workspace.name || "Workspace"}</span>
+      <div className="border-b border-line px-5 pb-5 pt-5">
+        <Logo href="/app/tasks" subtitle="Evidence ledger" />
+        <div className="mt-5 flex items-center gap-3 border-l-[3px] border-primary bg-primary-soft/55 px-3 py-3">
+          {data.workspace.kind === "DEMO" ? <FlaskConical className="size-4 text-primary" aria-hidden /> : <Building2 className="size-4 text-primary" aria-hidden />}
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-semibold">{data.workspace.name || "Workspace"}</span>
             <span className="block truncate text-xs text-muted">{data.workspace.kind === "DEMO" ? "Isolated demo" : data.workspace.organization}</span>
           </span>
         </div>
       </div>
+      <nav aria-label="Mobile workspace" className="flex-1 overflow-y-auto p-3">
+        <ul className="space-y-1">
+          {NAV.map((item) => {
+            const active = isActive(pathname, item.href);
+            const count = "count" in item && item.count ? item.count(data) : null;
+            return (
+              <li key={item.href}>
+                <Link href={item.href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("flex h-11 items-center gap-3 rounded-control border-l-[3px] px-3 text-[15px]", active ? "border-primary bg-primary-soft font-semibold text-primary-ink" : "border-transparent text-ink hover:bg-neutral-soft")}>
+                  <item.icon className="size-4.5" aria-hidden />
+                  <span className="flex-1">{item.label}</span>
+                  {count ? <span className="font-mono text-xs text-muted">{count}</span> : null}
+                </Link>
+              </li>
+            );
+          })}
+          <li className="mt-3 border-t border-line pt-3">
+            <Link href="/app/settings" onClick={onNavigate} aria-current={pathname.startsWith("/app/settings") ? "page" : undefined} className={cn("flex h-11 items-center gap-3 rounded-control border-l-[3px] px-3 text-[15px]", pathname.startsWith("/app/settings") ? "border-primary bg-primary-soft font-semibold text-primary-ink" : "border-transparent text-ink hover:bg-neutral-soft")}>
+              <Settings className="size-4.5" aria-hidden /> Settings
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 }
@@ -125,71 +125,60 @@ export function AppShell({ initial, children }: { initial: ShellData; children: 
 
   return (
     <div className="min-h-dvh bg-canvas">
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] border-r border-line bg-surface lg:block">
-        <SidebarBody data={shell} pathname={pathname} />
-      </aside>
-
-      {/* Tablet/mobile drawer */}
       <DialogPrimitive.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-ink/30 animate-pw-overlay lg:hidden" />
-          <DialogPrimitive.Content className="fixed inset-y-0 left-0 z-50 w-[280px] max-w-[85vw] border-r border-line bg-surface shadow-float animate-pw-fade-in lg:hidden">
-            <DialogPrimitive.Title className="sr-only">Navigation</DialogPrimitive.Title>
-            <DialogPrimitive.Description className="sr-only">Workspace navigation</DialogPrimitive.Description>
-            <DialogPrimitive.Close className="absolute right-3 top-4 flex size-9 items-center justify-center rounded-control text-muted hover:bg-neutral-soft" aria-label="Close navigation">
+          <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-evidence/45 animate-pw-overlay md:hidden" />
+          <DialogPrimitive.Content className="fixed inset-y-0 left-0 z-50 w-[300px] max-w-[88vw] border-r border-line bg-surface shadow-float animate-pw-fade-in md:hidden">
+            <DialogPrimitive.Title className="sr-only">Workspace navigation</DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">Move between Proofwork ledgers and settings.</DialogPrimitive.Description>
+            <DialogPrimitive.Close className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-control text-muted hover:bg-neutral-soft" aria-label="Close navigation">
               <X className="size-5" aria-hidden />
             </DialogPrimitive.Close>
-            <SidebarBody data={shell} pathname={pathname} onNavigate={() => setDrawerOpen(false)} />
+            <MobileNavigation data={shell} pathname={pathname} onNavigate={() => setDrawerOpen(false)} />
           </DialogPrimitive.Content>
         </DialogPrimitive.Portal>
       </DialogPrimitive.Root>
 
-      <div className="lg:pl-[248px]">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-surface/95 px-4 backdrop-blur sm:px-6">
-          <button type="button" className="flex size-10 items-center justify-center rounded-control text-ink hover:bg-neutral-soft lg:hidden" onClick={() => setDrawerOpen(true)} aria-label="Open navigation">
-            <MenuIcon className="size-5" aria-hidden />
-          </button>
-          <nav aria-label="Location" className="flex min-w-0 flex-1 items-center gap-2 text-[15px]">
-            <span className="hidden max-w-48 truncate text-muted md:inline">{shell.workspace.kind === "DEMO" ? "Demo workspace" : shell.workspace.organization || shell.workspace.name}</span>
-            <span className="hidden text-subtle md:inline" aria-hidden>
-              /
+      <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+        <div className="mx-auto flex h-[68px] max-w-[1600px] items-stretch px-3 sm:px-5">
+          <div className="flex min-w-0 flex-1 items-center gap-3 md:min-w-[210px] md:flex-none md:border-r md:border-line md:pr-5">
+            <button type="button" className="flex size-10 items-center justify-center rounded-control text-ink hover:bg-neutral-soft md:hidden" onClick={() => setDrawerOpen(true)} aria-label="Open navigation">
+              <MenuIcon className="size-5" aria-hidden />
+            </button>
+            <Logo href="/app/tasks" subtitle="Evidence ledger" className="hidden sm:inline-flex" />
+            <span className="truncate text-sm font-semibold sm:hidden">{title}</span>
+            <span className="hidden min-w-0 border-l border-line pl-3 xl:block">
+              <span className="block max-w-36 truncate text-xs font-semibold">{shell.workspace.name || "Workspace"}</span>
+              <span className="block max-w-36 truncate font-mono text-[9px] uppercase tracking-[0.06em] text-muted">{shell.workspace.kind === "DEMO" ? "Isolated demo" : shell.workspace.organization}</span>
             </span>
-            <span className="truncate font-medium text-ink" aria-current="page">
-              {title}
-            </span>
-          </nav>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <EnvironmentBadge kind={shell.workspace.kind} adapter={shell.connection?.adapter} className="hidden sm:inline-flex" />
+          </div>
+
+          <DesktopNav data={shell} pathname={pathname} />
+
+          <div className="ml-auto flex items-center gap-2 border-l border-line pl-3 sm:pl-4">
+            <EnvironmentBadge kind={shell.workspace.kind} adapter={shell.connection?.adapter} className="hidden xl:inline-flex" />
             {shell.workspace.writes_paused ? (
-              <Badge tone="warning" className="hidden md:inline-flex" icon={<PauseCircle className="size-3.5" aria-hidden />}>
+              <Badge tone="warning" className="hidden lg:inline-flex" icon={<PauseCircle className="size-3.5" aria-hidden />}>
                 Writes paused
               </Badge>
             ) : null}
             {shell.policy ? (
-              <span className="hidden items-center gap-1.5 text-sm text-ink md:inline-flex" title={`Recovery policy version ${shell.policy.version}`}>
-                {shell.policy.mode === "OBSERVE_ONLY" ? (
-                  <ShieldCheck className="size-4 text-muted" aria-hidden />
-                ) : (
-                  <TriangleAlert className="size-4 text-warning" aria-hidden />
-                )}
+              <span className="hidden items-center gap-1.5 text-xs text-ink 2xl:inline-flex" title={`Recovery policy version ${shell.policy.version}`}>
+                {shell.policy.mode === "OBSERVE_ONLY" ? <ShieldCheck className="size-4 text-muted" aria-hidden /> : <TriangleAlert className="size-4 text-warning" aria-hidden />}
                 {POLICY_LABELS[shell.policy.mode].short}
               </span>
             ) : null}
-            <span className="hidden h-6 w-px bg-line md:block" aria-hidden />
-            <AccountMenu
-              displayName={shell.identity.display_name}
-              email={shell.identity.email}
-              secondary={shell.workspace.kind === "DEMO" ? "Isolated demo" : shell.workspace.name}
-              kind={shell.identity.kind}
-            />
+            <Link href="/app/settings" aria-label="Settings" aria-current={pathname.startsWith("/app/settings") ? "page" : undefined} className={cn("hidden size-9 items-center justify-center rounded-control md:flex", pathname.startsWith("/app/settings") ? "bg-primary-soft text-primary" : "text-muted hover:bg-neutral-soft hover:text-ink")}>
+              <Settings className="size-4" aria-hidden />
+            </Link>
+            <AccountMenu displayName={shell.identity.display_name} email={shell.identity.email} secondary={shell.workspace.kind === "DEMO" ? "Isolated demo" : shell.workspace.name} kind={shell.identity.kind} />
           </div>
-        </header>
-        {shell.workspace.kind === "DEMO" ? <DemoBanner expiresAt={shell.workspace.expires_at} /> : null}
-        <main id="main" className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          {children}
-        </main>
-      </div>
+        </div>
+      </header>
+      {shell.workspace.kind === "DEMO" ? <DemoBanner expiresAt={shell.workspace.expires_at} /> : null}
+      <main id="main" className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 md:py-8 lg:px-8">
+        {children}
+      </main>
     </div>
   );
 }

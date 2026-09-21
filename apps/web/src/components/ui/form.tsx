@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const controlBase =
-  "w-full rounded-control border border-line-strong bg-surface text-[15px] text-ink placeholder:text-subtle transition-ui hover:border-subtle/60 focus:border-primary focus:outline-none focus:ring-3 focus:ring-primary/15 disabled:bg-neutral-soft disabled:text-muted aria-[invalid=true]:border-danger aria-[invalid=true]:focus:ring-danger/15";
+  "w-full rounded-control border border-line-strong bg-surface text-[15px] text-ink placeholder:text-subtle transition-ui hover:border-evidence/50 focus:border-primary focus:outline-none focus:ring-3 focus:ring-primary/15 disabled:bg-neutral-soft disabled:text-muted aria-[invalid=true]:border-danger aria-[invalid=true]:focus:ring-danger/15";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...props }, ref) {
   return <input ref={ref} className={cn(controlBase, "h-10 px-3", className)} {...props} />;
@@ -47,7 +47,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, React.InputHTMLA
 
 export function Label({ className, children, required, ...props }: React.LabelHTMLAttributes<HTMLLabelElement> & { required?: boolean }) {
   return (
-    <label className={cn("mb-1.5 block text-sm font-medium text-ink", className)} {...props}>
+    <label className={cn("mb-1.5 block font-mono text-[11px] font-medium uppercase tracking-[0.055em] text-ink", className)} {...props}>
       {children}
       {required ? (
         <span className="ml-0.5 text-danger" aria-hidden>
@@ -94,7 +94,7 @@ export function Field({ id, label, hint, error, required, className, children }:
 }
 
 export function Checkbox({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input type="checkbox" className={cn("mt-0.5 size-[18px] shrink-0 rounded-[5px] border-line-strong accent-primary", className)} {...props} />;
+  return <input type="checkbox" className={cn("mt-0.5 size-[18px] shrink-0 rounded-[3px] border-line-strong accent-primary", className)} {...props} />;
 }
 
 export function FormError({ message, reference }: { message?: string | null; reference?: string | null }) {

@@ -98,7 +98,7 @@ export function contextFor(session: Exclude<Session, { kind: "anonymous" }>, cor
 
 /** For API routes: require an authenticated context, optionally a completed onboarding. */
 export async function requireContext(correlationId: string, opts: { allowIncompleteOnboarding?: boolean } = {}) {
-  if (!isDatabaseReady()) throw new AppError("SETUP_REQUIRED", "The application database is not configured.");
+  if (!isDatabaseReady()) throw new AppError("SETUP_REQUIRED", "Proofwork is temporarily unavailable. Try again later.");
   const session = await getSession();
   if (session.kind === "anonymous") {
     if (session.demoExpired) throw new AppError("DEMO_EXPIRED", "This demo session expired. Start a new session to continue.");

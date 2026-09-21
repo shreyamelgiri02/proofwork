@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 
 export function AuthCard({ title, description, children, className }: { title: React.ReactNode; description?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-[12px] border border-line bg-surface p-6 shadow-float sm:p-10", className)}>
-      <h1 className="text-[30px] font-bold leading-tight tracking-[-0.03em] text-ink">{title}</h1>
+    <div className={cn("rounded-surface border border-line border-t-[3px] border-t-primary bg-surface p-5 shadow-card sm:p-7 lg:p-8", className)}>
+      <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.1em] text-primary">Secure account access</p>
+      <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.035em] text-ink">{title}</h1>
       {description ? <p className="mt-2 text-[16px] text-muted">{description}</p> : null}
-      <div className="mt-7">{children}</div>
+      <div className="mt-6">{children}</div>
     </div>
   );
 }
@@ -24,7 +25,7 @@ export function GoogleIcon({ className }: { className?: string }) {
 
 export function OrDivider() {
   return (
-    <div className="my-5 flex items-center gap-4 text-sm text-muted" role="separator" aria-label="or">
+    <div className="my-5 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted" role="separator" aria-label="or">
       <span className="h-px flex-1 bg-line" />
       or
       <span className="h-px flex-1 bg-line" />

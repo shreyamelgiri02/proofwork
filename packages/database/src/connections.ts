@@ -68,9 +68,9 @@ export async function seedStarterSubscriptions(admin: SandboxAdminClient, accoun
 
 /** Create/refresh the workspace's local sandbox connection and validate it through the read API. */
 export async function configureLocalSandbox(sql: Sql, ctx: ServiceContext, opts: { seedStarter: boolean }): Promise<ConnectionRow> {
-  if (!sandboxConfigured()) throw new AppError("SOURCE_NOT_CONFIGURED", "The local billing sandbox is not configured on this server (SANDBOX_API_URL / SANDBOX_READ_TOKEN).");
+  if (!sandboxConfigured()) throw new AppError("SOURCE_NOT_CONFIGURED", "Proofwork Sandbox is temporarily unavailable.");
   const admin = SandboxAdminClient.fromEnv();
-  if (!admin) throw new AppError("SOURCE_NOT_CONFIGURED", "The local billing sandbox admin credential is not configured.");
+  if (!admin) throw new AppError("SOURCE_NOT_CONFIGURED", "Proofwork Sandbox scenario controls are temporarily unavailable.");
   let accountId: string;
   try {
     const account = await admin.ensureAccount({
@@ -86,7 +86,7 @@ export async function configureLocalSandbox(sql: Sql, ctx: ServiceContext, opts:
 
   const [connection] = await sql<ConnectionRow[]>`
     insert into app.connections (workspace_id, adapter, environment, source_account_id, display_name, binding_method, health)
-    values (${ctx.workspace.id}, 'LOCAL_SANDBOX', 'SYNTHETIC_SANDBOX', ${accountId}, 'Local billing sandbox', 'SANDBOX_ACCOUNT_PROVISIONED', 'NOT_CHECKED')
+    values (${ctx.workspace.id}, 'LOCAL_SANDBOX', 'SYNTHETIC_SANDBOX', ${accountId}, 'Proofwork Sandbox', 'SANDBOX_ACCOUNT_PROVISIONED', 'NOT_CHECKED')
     on conflict (workspace_id, adapter) do update set
       source_account_id = excluded.source_account_id,
       config_version = case when app.connections.source_account_id is distinct from excluded.source_account_id then app.connections.config_version + 1 else app.connections.config_version end

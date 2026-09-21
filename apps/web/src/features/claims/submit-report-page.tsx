@@ -6,7 +6,7 @@ import { Clock, Info } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { claimSchema, formatDate, LIMITS, type ClaimInput } from "@proofwork/domain";
 import { Breadcrumbs, PageHeader } from "@/components/page";
 import { VerdictBadge } from "@/components/status";
@@ -37,12 +37,12 @@ export function SubmitReportPage() {
   const [result, setResult] = React.useState<ClaimResponse | null>(null);
   const [formError, setFormError] = React.useState<{ message: string; ref?: string } | null>(null);
   // One idempotency key per distinct submission: retries of the same payload reuse it.
-  const keyRef = React.useRef<{ payload: string; key: string } | null>(null);
+  const [submissionKey, setSubmissionKey] = React.useState<{ payload: string; key: string } | null>(null);
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     reset,
     setValue,
     formState: { errors, isSubmitting },
@@ -56,16 +56,17 @@ export function SubmitReportPage() {
     if (requested && requests.data?.items.some((r) => r.id === requested)) setValue("authorized_request_id", requested);
   }, [params, requests.data, setValue]);
 
-  const text = watch("report_text") ?? "";
+  const text = useWatch({ control, name: "report_text" }) ?? "";
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     const payload = JSON.stringify(values);
-    if (!keyRef.current || keyRef.current.payload !== payload) keyRef.current = { payload, key: newIdempotencyKey() };
+    const currentKey = submissionKey?.payload === payload ? submissionKey : { payload, key: newIdempotencyKey() };
+    setSubmissionKey(currentKey);
     try {
-      const res = await apiFetch<ClaimResponse>("/api/claims", { body: values, headers: { "idempotency-key": keyRef.current.key } });
+      const res = await apiFetch<ClaimResponse>("/api/claims", { body: values, headers: { "idempotency-key": currentKey.key } });
       setResult(res);
-      keyRef.current = null;
+      setSubmissionKey(null);
       await Promise.all([queryClient.invalidateQueries({ queryKey: ["tasks"] }), queryClient.invalidateQueries({ queryKey: ["session"] }), queryClient.invalidateQueries({ queryKey: ["requests"] })]);
     } catch (err) {
       const e = err instanceof ApiClientError ? err : null;
@@ -116,7 +117,7 @@ export function SubmitReportPage() {
     <div>
       <Breadcrumbs items={[{ label: "Tasks", href: "/app/tasks" }, { label: "Submit report" }]} />
       <PageHeader title="Submit the agent’s report" description="A report is accepted only against a separately authorized request." />
-      <div className="grid gap-5 xl:grid-cols-[1fr_440px]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,8fr)_minmax(340px,4fr)]">
         <Card className="p-6 sm:p-8">
           {requests.isPending ? (
             <div className="space-y-4">
@@ -172,7 +173,7 @@ export function SubmitReportPage() {
             </form>
           )}
         </Card>
-        <Card className="h-fit p-6 sm:p-7">
+        <Card className="h-fit p-6 sm:p-7 xl:sticky xl:top-24">
           <h2 className="text-[22px] font-semibold tracking-tight">After submission</h2>
           <p className="mt-2 text-[15px] text-muted">Your report goes through independent verification before an outcome is decided.</p>
           <ol className="mt-5 divide-y divide-line">

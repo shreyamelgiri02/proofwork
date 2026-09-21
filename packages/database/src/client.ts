@@ -7,21 +7,43 @@ export type Sql = postgres.Sql<Record<string, never>>;
 
 const globalForDb = globalThis as unknown as { __proofworkSql?: Sql };
 
+export interface DatabaseClientConfig {
+  max: number;
+  prepare: boolean;
+  ssl: false | "require";
+  applicationName: string;
+}
+
+export function databaseClientConfig(env: NodeJS.ProcessEnv = process.env): DatabaseClientConfig {
+  const runtime = env.DATABASE_RUNTIME ?? (env.VERCEL ? "serverless" : "persistent");
+  const requestedPoolSize = Number(env.DATABASE_POOL_SIZE ?? 10);
+  const persistentPoolSize = Number.isFinite(requestedPoolSize) ? Math.min(10, Math.max(1, Math.trunc(requestedPoolSize))) : 10;
+  return {
+    max: runtime === "serverless" ? 1 : persistentPoolSize,
+    prepare: runtime !== "serverless",
+    ssl: env.NODE_ENV === "production" ? "require" : false,
+    applicationName: env.WORKER_NAME ? "proofwork-worker" : "proofwork-web",
+  };
+}
+
 export function isDatabaseConfigured(env: NodeJS.ProcessEnv = process.env): boolean {
   return Boolean(env.DATABASE_URL);
 }
 
 export function getSql(): Sql {
   if (!process.env.DATABASE_URL) {
-    throw new AppError("SETUP_REQUIRED", "The application database is not configured. Set DATABASE_URL (see LOCAL-SETUP.md).");
+    throw new AppError("SETUP_REQUIRED", "Proofwork is temporarily unavailable. Try again later.");
   }
   if (!globalForDb.__proofworkSql) {
+    const config = databaseClientConfig();
     globalForDb.__proofworkSql = postgres(process.env.DATABASE_URL, {
-      max: Number(process.env.DATABASE_POOL_SIZE ?? 10),
+      max: config.max,
+      prepare: config.prepare,
+      ssl: config.ssl,
       idle_timeout: 20,
       connect_timeout: 10,
       onnotice: () => undefined,
-      connection: { application_name: process.env.WORKER_NAME ? "proofwork-worker" : "proofwork-web", search_path: "app,public" },
+      connection: { application_name: config.applicationName, search_path: "app,public" },
     }) as unknown as Sql;
   }
   return globalForDb.__proofworkSql;

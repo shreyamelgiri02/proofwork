@@ -52,7 +52,7 @@ export const POLICY_LABELS: Record<PolicyMode, { label: string; short: string; d
 };
 
 export const ADAPTER_LABELS: Record<AdapterKind, { label: string; environment: string }> = {
-  LOCAL_SANDBOX: { label: "Local billing sandbox", environment: "Local sandbox" },
+  LOCAL_SANDBOX: { label: "Proofwork Sandbox", environment: "Simulated billing" },
   STRIPE_TEST: { label: "Stripe test mode", environment: "Stripe test mode" },
 };
 

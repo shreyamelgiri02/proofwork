@@ -106,7 +106,7 @@ export function TasksPage() {
       ) : null}
 
       {/* Metrics band — same cohort and search as the table */}
-      <section aria-label="Task summary" className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+      <section aria-label="Task summary" className="grid grid-cols-2 overflow-hidden rounded-surface border border-line border-t-[3px] border-t-evidence bg-surface shadow-card xl:grid-cols-4">
         <Metric icon={<CircleCheck className="size-6 text-success" aria-hidden />} tint="bg-success-soft" value={c?.total} label="Accepted tasks" />
         <Metric icon={<CircleAlert className="size-6 text-danger" aria-hidden />} tint="bg-danger-soft" value={c?.mismatch} label="Needs action" />
         <Metric icon={<CircleHelp className="size-6 text-warning" aria-hidden />} tint="bg-warning-soft" value={c?.unverifiable} label="Could not verify" />
@@ -212,13 +212,13 @@ export function TasksPage() {
 
 function Metric({ icon, tint, value, label }: { icon: React.ReactNode; tint: string; value: number | string | undefined; label: string }) {
   return (
-    <Card className="flex items-center gap-4 px-5 py-4">
-      <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-full", tint)}>{icon}</span>
+    <div className="flex items-center gap-4 border-b border-r border-line px-4 py-4 last:border-r-0 xl:border-b-0 xl:px-5">
+      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-control border border-current/10", tint)}>{icon}</span>
       <span className="min-w-0">
         <span className="block text-2xl font-semibold tabular tracking-tight">{value ?? <Skeleton className="h-7 w-10" />}</span>
-        <span className="block truncate text-[15px] text-muted">{label}</span>
+        <span className="block truncate font-mono text-[10px] uppercase tracking-[0.045em] text-muted">{label}</span>
       </span>
-    </Card>
+    </div>
   );
 }
 

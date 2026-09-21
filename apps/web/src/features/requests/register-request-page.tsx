@@ -151,7 +151,7 @@ export function RegisterRequestPage() {
     <div>
       <Breadcrumbs items={[{ label: "Tasks", href: "/app/tasks" }, { label: "Register request" }]} />
       <PageHeader title="Register a customer request" description="Record authority before accepting an agent report." />
-      <div className="grid gap-5 xl:grid-cols-[1fr_440px]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,8fr)_minmax(340px,4fr)]">
         <Card className="p-6 sm:p-8">
           {subs.isError ? (
             <Alert tone="danger" title="Subscriptions could not be loaded" className="mb-5" action={<Button size="sm" variant="secondary" onClick={() => subs.refetch()}>Retry</Button>}>
@@ -298,7 +298,7 @@ export function RegisterRequestPage() {
           </form>
         </Card>
 
-        <Card className="h-fit p-6 sm:p-7">
+        <Card className="h-fit p-6 sm:p-7 xl:sticky xl:top-24">
           <h2 className="text-[22px] font-semibold tracking-tight">What happens next</h2>
           <ol className="mt-5 divide-y divide-line">
             {[

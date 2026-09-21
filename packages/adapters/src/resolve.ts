@@ -42,7 +42,7 @@ export function stripeStatus(env: NodeJS.ProcessEnv = process.env): { configured
 export function resolveAdapter(connection: ConnectionRef, opts: ResolveOptions): BillingAdapter {
   const env = opts.env ?? process.env;
   if (connection.adapter === "LOCAL_SANDBOX") {
-    if (!sandboxConfigured(env)) throw new AdapterConfigurationError("NOT_CONFIGURED", "The local billing sandbox URL or read credential is not configured.");
+    if (!sandboxConfigured(env)) throw new AdapterConfigurationError("NOT_CONFIGURED", "Proofwork Sandbox is temporarily unavailable.");
     if (!connection.source_account_id) throw new AdapterConfigurationError("NOT_CONFIGURED", "The sandbox connection has no account identity.");
     return new SandboxBillingAdapter({
       baseUrl: env.SANDBOX_API_URL!,

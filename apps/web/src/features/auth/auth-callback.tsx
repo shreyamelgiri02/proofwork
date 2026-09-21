@@ -8,6 +8,7 @@ import { LogoMark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/primitives";
 import { ApiClientError, apiFetch } from "@/lib/api-client";
+import { authCallbackIntent } from "@/lib/auth-flow";
 
 type State = { kind: "working" } | { kind: "error"; title: string; message: string; recovery: boolean };
 
@@ -22,31 +23,8 @@ export function AuthCallback() {
 
   // Errors that are fully determined by the URL are derived, not stored.
   const urlInfo = React.useMemo(() => {
-    const next = params.get("next") ?? undefined;
-    const recovery = params.get("type") === "recovery" || (next ?? "").startsWith("/reset-password");
-    // Supabase can return errors in the query or the URL fragment. A specific error_code
-    // (e.g. otp_expired for a used/expired email link) takes precedence over the generic
-    // `error` value, which is also "access_denied" for expired links.
     const hash = typeof window !== "undefined" ? new URLSearchParams(window.location.hash.replace(/^#/, "")) : null;
-    const specific = params.get("error_code") ?? hash?.get("error_code") ?? null;
-    const generic = params.get("error") ?? hash?.get("error") ?? null;
-    const errorCode = specific ?? generic;
-    const code = params.get("code") ?? undefined;
-    const token_hash = params.get("token_hash") ?? undefined;
-    const type = params.get("type") ?? undefined;
-    let error: State | null = null;
-    const oauthCancelled = !specific && generic === "access_denied";
-    if (errorCode && !oauthCancelled) {
-      error = {
-        kind: "error",
-        title: recovery ? "This reset link can't be used" : "This link can't be used",
-        message: /expired|otp|invalid/.test(errorCode) ? "The link has expired or was already used." : "We couldn't complete sign-in from this link.",
-        recovery,
-      };
-    } else if (!errorCode && !code && !token_hash) {
-      error = { kind: "error", title: "Missing sign-in details", message: "Open the most recent link from your email, or sign in again.", recovery };
-    }
-    return { next, recovery, errorCode, oauthCancelled, code, token_hash, type, error };
+    return authCallbackIntent(params, hash ?? undefined);
   }, [params]);
 
   const [exchangeError, setExchangeError] = React.useState<State | null>(null);

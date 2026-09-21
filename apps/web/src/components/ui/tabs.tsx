@@ -66,12 +66,12 @@ export function FilterTabs<K extends string>({
               variant === "underline" &&
                 cn("-mb-px border-b-2 px-3 py-2.5", selected ? "border-primary font-medium text-primary-ink" : "border-transparent text-muted hover:text-ink"),
               variant === "pill" &&
-                cn("rounded-control border px-3 py-1.5", selected ? "border-primary/30 bg-primary-soft font-medium text-primary-ink" : "border-line bg-surface text-muted hover:text-ink"),
+                cn("rounded-[3px] border px-3 py-1.5", selected ? "border-evidence bg-evidence font-medium text-white" : "border-line-strong bg-surface text-muted hover:border-evidence/40 hover:text-ink"),
             )}
           >
             {item.label}
             {item.count != null ? (
-              <span className={cn("rounded-md px-1.5 py-px text-xs tabular", selected ? "bg-primary/10 text-primary-ink" : "bg-neutral-soft text-neutral-ink")}>{item.count}</span>
+              <span className={cn("rounded-[2px] px-1.5 py-px text-xs tabular", selected && variant === "pill" ? "bg-white/15 text-white" : selected ? "bg-primary/10 text-primary-ink" : "bg-neutral-soft text-neutral-ink")}>{item.count}</span>
             ) : null}
           </button>
         );

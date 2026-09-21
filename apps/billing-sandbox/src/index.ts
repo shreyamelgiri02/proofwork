@@ -18,11 +18,12 @@ import { serve } from "@hono/node-server";
 import { config as loadEnv } from "dotenv";
 import { Hono, type Context } from "hono";
 import postgres from "postgres";
+import { sandboxListenConfig } from "./runtime";
 
 const here = dirname(fileURLToPath(import.meta.url));
 loadEnv({ path: resolve(here, "../../../.env") });
 
-const PORT = Number(process.env.SANDBOX_PORT ?? 4010);
+const listen = sandboxListenConfig();
 const DATABASE_URL = process.env.SANDBOX_DATABASE_URL;
 const TOKENS = {
   read: process.env.SANDBOX_READ_TOKEN ?? "",
@@ -41,7 +42,12 @@ for (const [k, v] of Object.entries(TOKENS)) {
   }
 }
 
-const sql = postgres(DATABASE_URL, { max: 5, idle_timeout: 30, connection: { search_path: "billing_sandbox" } });
+const sql = postgres(DATABASE_URL, {
+  max: 5,
+  idle_timeout: 30,
+  ssl: process.env.NODE_ENV === "production" ? "require" : false,
+  connection: { application_name: "proofwork-sandbox", search_path: "billing_sandbox" },
+});
 
 const clockOffsetMs = () => (Number(process.env.PROOFWORK_CLOCK_OFFSET_SECONDS ?? 0) || 0) * 1000;
 const nowDate = () => new Date(Date.now() + clockOffsetMs());
@@ -409,8 +415,8 @@ app.onError((err, c) => {
   return error(c, 500, "internal_error", "The sandbox encountered an internal error.");
 });
 
-serve({ fetch: app.fetch, port: PORT, hostname: "127.0.0.1" }, (info) => {
-  console.log(`[sandbox] Proofwork billing sandbox listening on http://127.0.0.1:${info.port}`);
+serve({ fetch: app.fetch, port: listen.port, hostname: listen.hostname }, (info) => {
+  console.log(`[sandbox] Proofwork billing sandbox listening on ${listen.hostname}:${info.port}`);
 });
 
 const shutdown = async () => {

@@ -4,7 +4,7 @@ import { LogoMark } from "@/components/brand";
 import { AppShell, type ShellData } from "@/components/shell/app-shell";
 import { Alert } from "@/components/ui/primitives";
 import { ExploreDemoButton } from "@/features/demo/explore-demo-button";
-import { isDatabaseReady, setupGaps } from "@/lib/env";
+import { isDatabaseReady } from "@/lib/env";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -14,14 +14,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     return (
       <main id="main" className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-5">
         <LogoMark className="size-10" />
-        <h1 className="mt-6 text-2xl font-semibold">Requires setup</h1>
-        <Alert tone="warning" className="mt-4" title="Proofwork cannot reach its services">
-          <ul className="list-disc pl-4">
-            {setupGaps().map((g) => (
-              <li key={g}>{g}</li>
-            ))}
-          </ul>
-          <p className="mt-2">Follow LOCAL-SETUP.md, then reload this page.</p>
+        <h1 className="mt-6 text-2xl font-semibold">Evidence services are unavailable</h1>
+        <Alert tone="warning" className="mt-4" title="Your workspace is safe">
+          Proofwork cannot reach its evidence ledger right now. Nothing was changed. Try again later or contact your deployment owner.
         </Alert>
       </main>
     );

@@ -3,9 +3,9 @@ import { z } from "zod";
 import { ensurePrivateWorkspace, getSql } from "@proofwork/database";
 import { AppError } from "@proofwork/domain";
 import { json, parseBody, route } from "@/lib/api";
+import { authDestination } from "@/lib/auth-flow";
 import { mapAuthError } from "@/lib/auth-errors";
 import { DEMO_COOKIE } from "@/lib/demo-cookie";
-import { safeNextPath } from "@/lib/redirect";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const bodySchema = z.object({
@@ -23,7 +23,6 @@ const bodySchema = z.object({
 export const POST = route(async (req, { correlationId }) => {
   const input = await parseBody(req, bodySchema, 4096);
   const supabase = await createSupabaseServerClient();
-  let recovery = input.type === "recovery";
 
   if (input.code) {
     const { error } = await supabase.auth.exchangeCodeForSession(input.code);
@@ -41,11 +40,6 @@ export const POST = route(async (req, { correlationId }) => {
   const meta = (user.user_metadata ?? {}) as { full_name?: string; name?: string; organization?: string };
   const workspace = await ensurePrivateWorkspace(getSql(), { id: user.id, email: user.email, fullName: meta.full_name ?? meta.name ?? null, organization: meta.organization ?? null }, correlationId);
 
-  const next = safeNextPath(input.next, "");
-  if (next.startsWith("/reset-password")) recovery = true;
-  let redirect: string;
-  if (recovery) redirect = "/reset-password";
-  else if (!workspace.onboarding_completed_at) redirect = "/onboarding";
-  else redirect = next && !next.startsWith("/onboarding") ? next : "/app/tasks";
+  const redirect = authDestination({ onboardingCompletedAt: workspace.onboarding_completed_at, next: input.next, type: input.type });
   return json({ redirect }, correlationId);
 });

@@ -1,4 +1,4 @@
-import { ArrowRight, Check, CircleAlert, CircleCheck, Database, FileText, Lock, RefreshCw, Scale, ShieldCheck, UserCheck } from "lucide-react";
+import { ArrowRight, Check, CircleAlert, FileCheck2, Fingerprint, LockKeyhole, Menu, RefreshCw, ScanSearch, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
@@ -18,229 +18,170 @@ async function signedInDestination(): Promise<string | null> {
   return null;
 }
 
+const publicLinks = [
+  ["Product", "#product"],
+  ["Method", "#method"],
+  ["Controls", "#controls"],
+] as const;
+
 export default async function HomePage() {
   const destination = await signedInDestination();
   return (
     <div className="min-h-dvh bg-canvas">
-      <header className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-5 sm:px-8">
-        <Logo size="lg" />
-        <nav aria-label="Primary" className="hidden items-center gap-10 text-[15px] text-ink md:flex">
-          <a href="#product" className="hover:text-primary-ink">
-            Product
-          </a>
-          <a href="#workflow" className="hover:text-primary-ink">
-            Workflow
-          </a>
-          <a href="#safety" className="hover:text-primary-ink">
-            Safety
-          </a>
-        </nav>
-        <div className="flex items-center gap-2 sm:gap-4">
-          {destination ? (
-            <Button asChild variant="dark">
-              <Link href={destination}>Open workspace</Link>
-            </Button>
-          ) : (
-            <>
-              <Link href="/sign-in" className="px-2 text-[15px] font-medium text-primary-ink hover:underline">
-                Sign in
-              </Link>
-              <Button asChild variant="dark" className="hidden sm:inline-flex">
-                <Link href="/sign-up">Start workspace</Link>
-              </Button>
-            </>
-          )}
+      <header className="sticky top-0 z-30 border-b border-line bg-canvas/95 backdrop-blur">
+        <div className="mx-auto flex h-[72px] max-w-[1320px] items-center justify-between gap-4 px-5 sm:px-8">
+          <Logo size="lg" subtitle="Outcome assurance" />
+          <nav aria-label="Primary" className="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
+            {publicLinks.map(([label, href]) => <a key={href} href={href} className="hover:text-ink">{label}</a>)}
+          </nav>
+          <div className="flex items-center gap-2">
+            {destination ? (
+              <Button asChild variant="dark"><Link href={destination}>Open workspace</Link></Button>
+            ) : (
+              <>
+                <Link href="/sign-in" className="hidden px-2 text-sm font-semibold text-primary-ink hover:underline sm:block">Sign in</Link>
+                <Button asChild variant="dark" className="hidden sm:inline-flex"><Link href="/sign-up">Start workspace</Link></Button>
+              </>
+            )}
+            <details className="group relative md:hidden">
+              <summary className="flex size-10 list-none items-center justify-center rounded-control border border-line-strong bg-surface [&::-webkit-details-marker]:hidden" aria-label="Open menu"><Menu className="size-5" aria-hidden /></summary>
+              <div className="absolute right-0 top-12 z-40 w-52 rounded-surface border border-line bg-surface p-2 shadow-float">
+                {publicLinks.map(([label, href]) => <a key={href} href={href} className="block rounded-control px-3 py-2.5 text-sm font-medium hover:bg-neutral-soft">{label}</a>)}
+                <div className="my-2 border-t border-line" />
+                <Link href={destination ?? "/sign-in"} className="block rounded-control px-3 py-2.5 text-sm font-semibold text-primary-ink hover:bg-primary-soft">{destination ? "Open workspace" : "Sign in"}</Link>
+                {!destination ? <Link href="/sign-up" className="block rounded-control px-3 py-2.5 text-sm font-semibold hover:bg-neutral-soft">Start workspace</Link> : null}
+              </div>
+            </details>
+          </div>
         </div>
       </header>
 
       <main id="main">
-        {/* Hero */}
-        <section className="mx-auto grid max-w-[1200px] items-center gap-12 px-5 pb-16 pt-8 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:pb-24 lg:pt-14">
-          <div>
-            <p className="inline-flex rounded-full bg-primary-soft px-3.5 py-1.5 text-sm font-medium text-primary-ink">Outcome assurance for AI employees</p>
-            <h1 className="mt-6 text-[44px] font-bold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[64px]">
-              Trust the outcome.
-              <br />
-              Not the claim.
+        <section className="mx-auto grid max-w-[1320px] gap-10 px-5 pb-16 pt-10 sm:px-8 sm:pt-14 lg:grid-cols-12 lg:items-center lg:gap-12 lg:pb-24 lg:pt-20">
+          <div className="lg:col-span-5">
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">Outcome assurance for AI employees</p>
+            <h1 className="mt-5 text-[48px] font-semibold leading-[0.94] tracking-[-0.055em] text-ink sm:text-[68px] lg:text-[72px]">
+              Trust the outcome.<br /><span className="text-muted">Not the claim.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-[21px]">
-              Independently check your business systems to verify AI employee work and recover unfinished tasks before they impact your business.
-            </p>
+            <p className="mt-6 max-w-xl text-[18px] leading-relaxed text-muted sm:text-[20px]">Independently verify AI employee work against the systems that hold the truth—then recover only what was explicitly authorized.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-start">
-              <Button asChild size="lg" className="h-13 px-8 text-base">
-                <Link href={destination ?? "/sign-up"}>{destination ? "Open your workspace" : "Build your workspace"}</Link>
-              </Button>
-              {destination ? null : <ExploreDemoButton variant="secondary" size="lg" className="h-13 px-8 text-base" />}
+              <Button asChild size="lg" className="h-12 px-7"><Link href={destination ?? "/sign-up"}>{destination ? "Open your workspace" : "Build your workspace"}<ArrowRight aria-hidden /></Link></Button>
+              {destination ? null : <ExploreDemoButton variant="secondary" size="lg" className="h-12 px-7" />}
             </div>
-            <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-[15px] text-muted">
-              {["No card required", "Isolated simulated data", "Complete audit history"].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <span className="flex size-6 items-center justify-center rounded-full bg-success-soft">
-                    <Check className="size-3.5 text-success" aria-hidden />
-                  </span>
-                  {item}
-                </li>
-              ))}
+            <ul className="mt-8 grid gap-2 border-t border-line pt-5 text-sm text-muted sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {["No card required", "Isolated simulation", "Durable audit trail"].map((item) => <li key={item} className="flex items-center gap-2"><Check className="size-4 text-success" aria-hidden />{item}</li>)}
             </ul>
           </div>
 
-          {/* Illustrative evidence preview — explicitly labeled, not live data */}
-          <figure className="rounded-[14px] border border-line bg-surface shadow-float">
-            <figcaption className="sr-only">Illustrative example of a Proofwork evidence comparison using simulated data.</figcaption>
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line px-6 py-5">
-              <div>
-                <p className="text-2xl font-semibold tracking-tight">Rivera Logistics</p>
-                <p className="mt-1 text-sm text-muted">
-                  Subscription <span className="font-mono text-[13px]">sub_demo_1048</span>
-                </p>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center gap-2 rounded-md bg-danger-soft px-3 py-1.5 text-[15px] font-medium text-danger-ink">
-                  <CircleAlert className="size-4 text-danger" aria-hidden /> Needs action
-                </span>
-                <p className="mt-2 text-xs text-subtle">Illustrative example · simulated data</p>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-3">
-              {[
-                { icon: <CircleCheck className="size-5 text-success" aria-hidden />, title: "Authorized", sub: "What the customer asked", heading: "Cancel at period end", body: "Standard monthly plan. Cancel at the end of the current paid period.", tone: "bg-surface-muted" },
-                { icon: <CircleCheck className="size-5 text-success" aria-hidden />, title: "Agent reported", sub: "What the AI employee said", heading: "Cancellation scheduled", body: "“I've scheduled the cancellation for the end of the billing period.”", tone: "bg-success-soft/60" },
-                { icon: <CircleAlert className="size-5 text-danger" aria-hidden />, title: "Source observed", sub: "What the billing record shows", heading: "Cancellation: No", body: "The subscription is active and no cancellation is scheduled.", tone: "bg-danger-soft/70" },
-              ].map((col) => (
-                <div key={col.title} className="flex flex-col">
-                  <div className="mb-3 flex items-start gap-2">
-                    {col.icon}
-                    <div>
-                      <p className="text-sm font-semibold">{col.title}</p>
-                      <p className="text-xs text-muted">{col.sub}</p>
-                    </div>
-                  </div>
-                  <div className={`flex-1 rounded-control p-3.5 ${col.tone}`}>
-                    <p className={`text-sm font-semibold ${col.title === "Source observed" ? "text-danger-ink" : ""}`}>{col.heading}</p>
-                    <p className="mt-2 text-[13px] leading-relaxed text-muted">{col.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mx-5 mb-5 flex flex-col gap-3 rounded-control border border-primary/15 bg-primary-soft/70 p-4 sm:flex-row sm:items-center">
-              <ShieldCheck className="size-6 shrink-0 text-primary" aria-hidden />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">Bounded recovery available</p>
-                <p className="text-[13px] text-muted">Schedule the cancellation at the authorized period end — after human approval, with a fresh read before and after.</p>
+          <figure className="relative overflow-hidden rounded-surface bg-evidence text-white shadow-float lg:col-span-7">
+            <figcaption className="flex items-center justify-between gap-4 border-b border-white/15 px-5 py-4 sm:px-7">
+              <span>
+                <span className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50">Illustrative evidence ledger</span>
+                <span className="mt-1 block text-lg font-semibold">Case PW-2026-1048</span>
+              </span>
+              <span className="verdict-stamp text-danger-soft"><CircleAlert className="size-3.5" aria-hidden /> Mismatch</span>
+            </figcaption>
+            <div className="relative px-5 py-4 sm:px-7 sm:py-6">
+              <svg className="absolute bottom-9 left-[35px] top-9 w-4 overflow-visible sm:left-[43px]" viewBox="0 0 16 320" preserveAspectRatio="none" aria-hidden>
+                <path d="M8 0V320" stroke="rgba(255,255,255,.16)" strokeWidth="1" />
+                <path d="M8 0V320" stroke="#5d85ea" strokeWidth="2" strokeDasharray="10 38" className="animate-pw-trace" />
+              </svg>
+              <ol className="relative space-y-2">
+                {[
+                  { n: "01", code: "AUTHORIZED REQUEST", title: "Cancel at paid-period end", detail: "sub_demo_1048 · 30 Sep 2026", tone: "text-white" },
+                  { n: "02", code: "AGENT CLAIM", title: "Cancellation scheduled", detail: "Receipt received 10:42:08 UTC", tone: "text-white" },
+                  { n: "03", code: "OBSERVED SOURCE", title: "Cancellation: no", detail: "Independent billing read · 10:42:14 UTC", tone: "text-danger-soft" },
+                  { n: "04", code: "VERDICT", title: "Authorized outcome not observed", detail: "SCHEDULE_MISSING · evaluator v1", tone: "text-danger-soft" },
+                ].map((row) => (
+                  <li key={row.code} className="grid grid-cols-[36px_1fr] gap-4 rounded-control border border-white/10 bg-white/[0.055] p-3 sm:grid-cols-[44px_1fr] sm:p-4">
+                    <span className="relative z-10 flex size-7 items-center justify-center rounded-[3px] border border-white/20 bg-evidence font-mono text-[10px] text-white/65">{row.n}</span>
+                    <span className="min-w-0">
+                      <span className="block font-mono text-[9px] tracking-[0.1em] text-white/45">{row.code}</span>
+                      <span className={`mt-1 block text-[16px] font-semibold ${row.tone}`}>{row.title}</span>
+                      <span className="mt-1 block truncate font-mono text-[11px] text-white/52">{row.detail}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-4 grid gap-3 border-t border-white/15 pt-4 sm:grid-cols-[1fr_auto] sm:items-center">
+                <p className="text-sm text-white/65"><strong className="font-semibold text-white">Bounded correction available.</strong> One approved field change, with a fresh read before and after.</p>
+                <span className="verdict-stamp text-success-soft"><ShieldCheck className="size-3.5" aria-hidden /> Recoverable</span>
               </div>
             </div>
           </figure>
         </section>
 
-        {/* Product */}
-        <section id="product" className="scroll-mt-8 border-t border-line bg-surface py-20">
-          <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
-            <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-muted">Why it matters</p>
-            <h2 className="mx-auto mt-4 max-w-2xl text-center text-[34px] font-bold leading-tight tracking-[-0.03em] sm:text-[46px]">An agent response is not a business outcome.</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-center text-lg leading-relaxed text-muted">
-              AI employees can be confident and wrong. Proofwork independently verifies results in your business systems and helps you recover unfinished work before it creates real costs.
-            </p>
-            <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <section id="product" className="scroll-mt-24 border-y border-line bg-surface">
+          <div className="mx-auto grid max-w-[1320px] px-5 sm:px-8 lg:grid-cols-[4fr_8fr]">
+            <div className="border-b border-line py-12 lg:border-b-0 lg:border-r lg:py-16 lg:pr-12">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-primary">The product</p>
+              <h2 className="mt-4 text-[34px] font-semibold leading-[1.05] tracking-[-0.04em] sm:text-[44px]">One record from request to result.</h2>
+              <p className="mt-4 text-[17px] leading-relaxed text-muted">An agent response is only one line in the ledger. The source observation decides the outcome.</p>
+            </div>
+            <div className="divide-y divide-line lg:pl-12">
               {[
-                { icon: <FileText aria-hidden />, title: "The request is recorded first", body: "An operator confirms what the customer authorized — the exact subscription and paid-period end — before any agent report is accepted." },
-                { icon: <Database aria-hidden />, title: "The source is read independently", body: "Proofwork reads the billing record itself. The agent's report never changes a verdict, and unreachable sources stay “Could not verify”." },
-                { icon: <Scale aria-hidden />, title: "Every decision is explainable", body: "Field-by-field evidence, reason codes, evaluator versions and a complete activity history show exactly why a task passed or needs action." },
-              ].map((card) => (
-                <div key={card.title} className="rounded-surface border border-line bg-canvas p-6">
-                  <div className="flex size-10 items-center justify-center rounded-control bg-primary-soft text-primary [&_svg]:size-5">{card.icon}</div>
-                  <h3 className="mt-4 text-lg font-semibold tracking-tight">{card.title}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-muted">{card.body}</p>
-                </div>
+                { icon: Fingerprint, code: "AUTHORITY", title: "Record the boundary before the claim", body: "Fix the customer, subscription, and paid-period end before any report is accepted." },
+                { icon: ScanSearch, code: "EVIDENCE", title: "Read the source independently", body: "The agent cannot mark its own work complete. Unreachable evidence stays unverified." },
+                { icon: FileCheck2, code: "DECISION", title: "Explain every verdict", body: "Field comparisons, reason codes, evaluator versions, and timestamps make each decision inspectable." },
+              ].map((item) => (
+                <article key={item.code} className="grid gap-4 py-7 sm:grid-cols-[120px_1fr]">
+                  <span className="flex items-center gap-2 font-mono text-[10px] tracking-[0.09em] text-muted"><item.icon className="size-4 text-primary" aria-hidden />{item.code}</span>
+                  <span><h3 className="text-xl font-semibold tracking-[-0.02em]">{item.title}</h3><p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted">{item.body}</p></span>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Workflow */}
-        <section id="workflow" className="scroll-mt-8 py-20">
-          <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
-            <div className="max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Workflow</p>
-              <h2 className="mt-3 text-[32px] font-bold tracking-[-0.03em] sm:text-[40px]">One workflow, verified end to end.</h2>
-              <p className="mt-3 text-lg text-muted">
-                The first supported outcome is <span className="font-medium text-ink">cancelling a subscription at the end of its current paid period</span>. No refunds, immediate cancellations or invoice changes.
-              </p>
+        <section id="method" className="scroll-mt-24 mx-auto max-w-[1320px] px-5 py-16 sm:px-8 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[4fr_8fr]">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-primary">Method / 01–06</p>
+              <h2 className="mt-4 text-[34px] font-semibold tracking-[-0.04em] sm:text-[44px]">Verification that survives a closed tab.</h2>
             </div>
-            <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ol className="border-t-[3px] border-evidence bg-surface shadow-card">
               {[
-                ["Register the customer request", "Preview the paid-period end from the source and confirm the customer's authority."],
-                ["Accept the agent's report", "From the form or the authenticated ingestion API, with idempotency keys."],
-                ["Read the billing source", "A background worker reads the subscription independently, even after you close the tab."],
-                ["Decide deterministically", "A versioned evaluator compares identity, boundary and cancellation state."],
-                ["Approve a bounded fix", "Review the exact change: cancel_at_period_end = true. Nothing else."],
-                ["Verify the result again", "After the write, a separate read decides the outcome — never the write response."],
-              ].map(([title, body], i) => (
-                <li key={title} className="rounded-surface border border-line bg-surface p-5">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-ink">{i + 1}</span>
-                  <p className="mt-3 font-semibold">{title}</p>
-                  <p className="mt-1 text-[15px] text-muted">{body}</p>
+                ["01", "Register authority", "Confirm the exact outcome and boundary from the source."],
+                ["02", "Accept the report", "Preserve the claim and its receipt without trusting it."],
+                ["03", "Observe independently", "A durable worker reads the source of truth."],
+                ["04", "Decide deterministically", "Compare identity, boundary, and state under a versioned evaluator."],
+                ["05", "Approve one bounded fix", "Preview the only supported change before dispatch."],
+                ["06", "Read again", "A separate observation—not the write response—closes the case."],
+              ].map(([n, title, body]) => (
+                <li key={n} className="grid grid-cols-[44px_1fr] gap-4 border-x border-b border-line px-4 py-5 sm:grid-cols-[64px_180px_1fr] sm:items-baseline sm:px-6">
+                  <span className="font-mono text-[11px] text-primary">{n}</span><strong className="font-semibold">{title}</strong><span className="text-sm text-muted">{body}</span>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
-        {/* Safety */}
-        <section id="safety" className="scroll-mt-8 border-y border-line bg-surface py-20">
-          <div className="mx-auto grid max-w-[1200px] gap-12 px-5 sm:px-8 lg:grid-cols-2">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Safety</p>
-              <h2 className="mt-3 text-[32px] font-bold tracking-[-0.03em] sm:text-[40px]">Recovery within the authority you grant.</h2>
-              <p className="mt-4 text-lg text-muted">Choose Observe only, Require human approval, or Auto-recover the single supported correction. Pause writes at any time — verification continues.</p>
-            </div>
-            <ul className="grid gap-4">
+        <section id="controls" className="scroll-mt-24 bg-evidence py-16 text-white lg:py-20">
+          <div className="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-[5fr_7fr]">
+            <div><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/50">Recovery controls</p><h2 className="mt-4 text-[36px] font-semibold leading-[1.04] tracking-[-0.04em] sm:text-[48px]">Correction without overreach.</h2><p className="mt-5 max-w-xl text-[17px] leading-relaxed text-white/65">Choose observation only, human approval, or automatic recovery for the single authorized action. Pause writes without pausing verification.</p></div>
+            <div className="divide-y divide-white/15 border-y border-white/15">
               {[
-                { icon: <UserCheck aria-hidden />, title: "Human approval by default", body: "Proposals expire after 15 minutes and are bound to the request, policy and source fingerprint." },
-                { icon: <RefreshCw aria-hidden />, title: "Fresh check before, independent read after", body: "A stale, changed or near-boundary proposal cannot be applied." },
-                { icon: <Lock aria-hidden />, title: "Durable, uncertainty-aware writes", body: "Stable operation keys, one unresolved write per subscription, and reconciliation when a response is lost." },
-              ].map((item) => (
-                <li key={item.title} className="flex gap-4 rounded-surface border border-line bg-canvas p-5">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-primary-soft text-primary [&_svg]:size-5">{item.icon}</span>
-                  <div>
-                    <p className="font-semibold">{item.title}</p>
-                    <p className="mt-1 text-[15px] text-muted">{item.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                { icon: ShieldCheck, title: "Human approval by default", body: "Proposals expire and remain bound to the exact request, policy, and evidence fingerprint." },
+                { icon: RefreshCw, title: "Fresh read before and after", body: "Stale, changed, or near-boundary evidence blocks dispatch." },
+                { icon: LockKeyhole, title: "Durable uncertainty handling", body: "Stable operation keys and reconciliation protect against lost responses and duplicate writes." },
+              ].map((item) => <div key={item.title} className="grid grid-cols-[40px_1fr] gap-4 py-5"><item.icon className="size-5 text-[#87a8ff]" aria-hidden /><span><h3 className="font-semibold">{item.title}</h3><p className="mt-1 text-sm leading-relaxed text-white/60">{item.body}</p></span></div>)}
+            </div>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="mx-auto flex max-w-[1200px] flex-col items-center px-5 text-center sm:px-8">
-            <h2 className="text-[30px] font-bold tracking-[-0.03em] sm:text-[38px]">See the full chain in a few minutes.</h2>
-            <p className="mt-3 max-w-xl text-lg text-muted">The demo runs against an isolated simulated billing source that belongs only to your session.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {destination ? (
-                <Button asChild size="lg">
-                  <Link href={destination}>
-                    Open workspace <ArrowRight aria-hidden />
-                  </Link>
-                </Button>
-              ) : (
-                <>
-                  <ExploreDemoButton size="lg" icon>
-                    Explore live demo
-                  </ExploreDemoButton>
-                  <Button asChild size="lg" variant="secondary">
-                    <Link href="/sign-up">Build your workspace</Link>
-                  </Button>
-                </>
-              )}
-            </div>
+        <section className="mx-auto max-w-[1320px] px-5 py-16 sm:px-8 lg:py-20">
+          <div className="grid gap-6 border-l-[3px] border-primary bg-surface px-6 py-8 shadow-card sm:grid-cols-[1fr_auto] sm:items-center sm:px-8">
+            <div><p className="font-mono text-[10px] uppercase tracking-[0.1em] text-primary">Inspect the full chain</p><h2 className="mt-2 text-[30px] font-semibold tracking-[-0.035em]">Run an isolated case in a few minutes.</h2><p className="mt-2 text-muted">Simulated billing data, every decision visible, no production system connected.</p></div>
+            <div className="flex flex-col gap-3 sm:items-end">{destination ? <Button asChild size="lg"><Link href={destination}>Open workspace <ArrowRight aria-hidden /></Link></Button> : <><ExploreDemoButton size="lg" icon /><Button asChild variant="secondary"><Link href="/sign-up">Build your workspace</Link></Button></>}</div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-2 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>© 2026 Proofwork. A project by Shreya Melgiri.</p>
-          <p>Supported workflow: subscription.cancel_at_period_end.v1</p>
+      <footer className="border-t border-line bg-surface">
+        <div className="mx-auto grid max-w-[1320px] gap-5 px-5 py-8 text-sm text-muted sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
+          <div><Logo size="sm" href="/" /><p className="mt-3 max-w-md">Independent evidence for the business actions AI employees report as complete.</p></div>
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">{[["Privacy","/privacy"],["Terms","/terms"],["Security","/security"],["Help","/help"]].map(([label,href]) => <Link key={href} href={href} className="hover:text-ink">{label}</Link>)}</nav>
+          <p className="border-t border-line pt-4 font-mono text-[10px] uppercase tracking-[0.05em] md:col-span-2">© 2026 Proofwork · Supported workflow: subscription.cancel_at_period_end.v1</p>
         </div>
       </footer>
     </div>
